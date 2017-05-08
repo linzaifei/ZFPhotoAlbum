@@ -1,2 +1,3 @@
 # ZFPhotoAlbum
-/Users/xsy/Library/Containers/com.tencent.qq/Data/Library/Caches/Images/C13A8B9EC283354E92E8EFCE3ECA51BF.png
+![image]( https://github.com/linzaifei/ZFPhotoAlbum/ZFPhotoAlbum/ZFPhotoAlbumPhotos/camare.png)
+![image]( https://github.com/linzaifei/ZFPhotoAlbum/ZFPhotoAlbum/ZFPhotoAlbumPhotos/photo.png)
