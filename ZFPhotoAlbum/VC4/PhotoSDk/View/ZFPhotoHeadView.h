@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 @class ZFCamareHeadView;
 @class ZFTakePhotoHeadView;
+@class ZFBrowHeadViewBar;
 
 typedef void(^CancelBlock)();
 typedef void(^ChooseBlock)();
@@ -39,5 +40,16 @@ typedef void(^ChangeBlock)();
 @property(copy,nonatomic)CancelBlock cancelBlock;
 @property(copy,nonatomic)ChooseBlock chooseBlock;
 @end
+
+
+//图片浏览头视图
+@interface ZFBrowHeadViewBar : UINavigationBar
+
+@property(copy,nonatomic)NSString *title;
+@property(copy,nonatomic)CancelBlock cancelBlock;
+@property(copy,nonatomic)ChooseBlock chooseBlock;
+@property(assign,nonatomic)NSInteger count;
+@end
+
 
 

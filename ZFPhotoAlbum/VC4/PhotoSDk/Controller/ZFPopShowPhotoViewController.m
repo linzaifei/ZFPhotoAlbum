@@ -11,6 +11,7 @@
 #import <Photos/Photos.h>
 #import "ZFPhotoTableViewCell.h"
 #import "ZFPhotoPresentationVC.h"
+
 @interface ZFPopShowPhotoViewController ()<UITableViewDelegate,UITableViewDataSource>
 @property(strong,nonatomic)ZFPersentTransition *persentTransition;
 @end
