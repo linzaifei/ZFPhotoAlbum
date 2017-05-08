@@ -405,6 +405,7 @@ kCMAttachmentMode_ShouldPropagate);
         [self.view insertSubview:_imageView atIndex:0];
         self.imageView.layer.masksToBounds = YES;
         self.imageView.image = _image;
+        
        _takePhotoHeadView.isTake = YES;
     }];
 }
@@ -421,7 +422,7 @@ kCMAttachmentMode_ShouldPropagate);
 }
 //返回
 -(void)zf_backAction{
-    [self zf_cancel];
+    
     [self zf_closeAnnimation];
     [self performSelector:@selector(zf_dey) withObject:self afterDelay:0.5];
 }
@@ -446,6 +447,7 @@ kCMAttachmentMode_ShouldPropagate);
            ws.takePhotoHeadView.isTake = NO;
         }
     }];
+    
 }
 
 //缩放手势 用于调整焦距
@@ -483,6 +485,7 @@ kCMAttachmentMode_ShouldPropagate);
     if (self.session) {
         [self.session stopRunning];
     }
+    
     [UIView animateWithDuration:0.3 animations:^{
         _upImageView.transform = CGAffineTransformIdentity;
         _downImageView.transform = CGAffineTransformIdentity;

@@ -38,6 +38,7 @@
     [self zf_setUI];
     [self zf_permission];
     [self.notificationModel addObserver:self forKeyPath:@"seletedPhotos" options:NSKeyValueObservingOptionNew context:nil];
+    
 }
 -(instancetype)init{
     if (self = [super init]) {
@@ -93,22 +94,26 @@
     self.collectionView.dataSource = self;
     [self.contentView addSubview:self.collectionView];
     [self.collectionView registerClass:[ZFPhotoCollectionViewCell class] forCellWithReuseIdentifier:NSStringFromClass([ZFPhotoCollectionViewCell class])];
-//   [self registerForPreviewingWithDelegate:self sourceView:cell.contentView];
+    
+    //用于3Dtouch
     [self registerForPreviewingWithDelegate:self sourceView:self.collectionView];
+    
     //////------block --------
     __weak ZFPhotoViewController *ws = self;
     //点击取消
-   self.photoHeadView.cancelBlock = ^(){
+  
+    self.photoHeadView.cancelBlock = ^(){
         [ws zf_dismess];
     };
     //点击下一步
+    
     self.photoHeadView.chooseBlock = ^(){
-
         if ([ws.delegate respondsToSelector:@selector(photoPickerViewController:didSelectPhotos:)]) {
             [ws.delegate photoPickerViewController:ws didSelectPhotos:[ws.notificationModel.seletedPhotos copy]];
         }
         [ws dismissViewControllerAnimated:YES completion:NULL];
     };
+    
     //点击标题
     self.photoHeadView.titleBlock = ^(){
         [ws zf_showPhotoViewController];
