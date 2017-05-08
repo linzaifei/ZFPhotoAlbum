@@ -6,9 +6,9 @@
 //  Copyright © 2017年 林再飞. All rights reserved.
 //
 
-#import "NSNotificationModel.h"
+#import "ZFNSNotificationModel.h"
 
-@implementation NSNotificationModel
+@implementation ZFNSNotificationModel
 
 
 -(NSMutableArray <PHAsset *>*)seletedPhotos{

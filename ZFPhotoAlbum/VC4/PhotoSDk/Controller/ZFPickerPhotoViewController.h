@@ -1,15 +1,18 @@
 //
-//  ZFPhotoViewController.h
-//  Summary
+//  ZFPickerPhotoViewController.h
+//  ZFPhotoAlbum
 //
-//  Created by xinshiyun on 2017/4/12.
+//  Created by xsy on 2017/5/3.
 //  Copyright © 2017年 林再飞. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
 @class PHAsset;
 @protocol ZFPhotoPickerViewControllerDelegate;
-@interface ZFPhotoViewController : UIViewController
+
+
+@interface ZFPickerPhotoViewController : UINavigationController
+
 /*!
  * 排显示数目 默认 3 (3 - 5)
  */
@@ -31,7 +34,7 @@
 @property(assign,nonatomic)UIEdgeInsets sectionInset;
 
 /*!
- * 最大选择数量 默认9 
+ * 最大选择数量 默认9
  */
 @property(assign,nonatomic)NSInteger maxCount;
 
@@ -40,23 +43,5 @@
  */
 @property(strong,nonatomic)NSArray<PHAsset *>*selectItems;
 
-@property (nonatomic,weak) id<ZFPhotoPickerViewControllerDelegate> delegate;
-
-//选中相机
-@property(copy,nonatomic)void(^clickCamareBlock)();
+@property (nonatomic,weak) id<ZFPhotoPickerViewControllerDelegate> pickerDelegate;
 @end
-
-@protocol ZFPhotoPickerViewControllerDelegate <NSObject>
-
-/**
- 选择照片返回代理方法
-
- @param pickerViewController 图片选择控制器
- @param photos 选中的图片数组
- */
-- (void)photoPickerViewController:(ZFPhotoViewController *)pickerViewController didSelectPhotos:(NSArray<PHAsset *> *)photos;
-
-@end
-
-
-

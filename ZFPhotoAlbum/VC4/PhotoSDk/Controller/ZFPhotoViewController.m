@@ -7,26 +7,23 @@
 //
 
 #import "ZFPhotoViewController.h"
-#import <Photos/Photos.h>
 #import "ZFPhotoHeadView.h"
 #import "ZFPhotoCollectionViewCell.h"
 #import "RemindView.h"
-#import "ZFCamareViewController.h"
 #import "ZFPopShowPhotoViewController.h"
-#import "NSNotificationModel.h"
+#import "ZFNSNotificationModel.h"
 #import "ZFBrowsePhotoViewController.h"
+#import "ZFCamareViewController.h"
+#import "ZFPhotoAlbum.h"
 
-//设备屏幕尺寸
-#define kScreenHeight   [UIScreen mainScreen].bounds.size.height
-#define kScreenWidth    [UIScreen mainScreen].bounds.size.width
-@interface ZFPhotoViewController ()<UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UINavigationControllerDelegate, UIImagePickerControllerDelegate,PHPhotoLibraryChangeObserver>
+@interface ZFPhotoViewController ()<UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UINavigationControllerDelegate, UIImagePickerControllerDelegate,PHPhotoLibraryChangeObserver,UIViewControllerPreviewingDelegate>
 @property(strong,nonatomic)UICollectionView *collectionView;
 @property(strong,nonatomic)NSMutableArray *dataArr;
 @property(strong,nonatomic)NSMutableDictionary *selectedAssetsDic;//选择assest
 @property(strong,nonatomic)ZFCamareViewController *camareViewController;
-@property(strong,nonatomic)UIView *contentView;//整体视图
 @property(strong,nonatomic)ZFPhotoHeadView *photoHeadView;
-@property(strong,nonatomic)NSNotificationModel *notificationModel;//监听数组
+@property(strong,nonatomic)ZFNSNotificationModel *notificationModel;//监听数组
+@property(strong,nonatomic)UIView *contentView;
 //存储所有照片
 @property (nonatomic, strong) NSMutableArray <PHFetchResult *>*sectionResults;
 @property (nonatomic, strong) NSMutableArray *sectionCollectResults;
@@ -39,7 +36,7 @@
     [super viewDidLoad];
     [self zf_addChildrenView];
     [self zf_setUI];
-    
+    [self zf_permission];
     [self.notificationModel addObserver:self forKeyPath:@"seletedPhotos" options:NSKeyValueObservingOptionNew context:nil];
 }
 -(instancetype)init{
@@ -55,8 +52,8 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self zf_permission];
- 
+//    self.navigationController.delegate = self;
+     [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
 -(void)zf_addChildrenView{
@@ -96,39 +93,34 @@
     self.collectionView.dataSource = self;
     [self.contentView addSubview:self.collectionView];
     [self.collectionView registerClass:[ZFPhotoCollectionViewCell class] forCellWithReuseIdentifier:NSStringFromClass([ZFPhotoCollectionViewCell class])];
-   
+//   [self registerForPreviewingWithDelegate:self sourceView:cell.contentView];
+    [self registerForPreviewingWithDelegate:self sourceView:self.collectionView];
     //////------block --------
     __weak ZFPhotoViewController *ws = self;
     //点击取消
    self.photoHeadView.cancelBlock = ^(){
-        if (ws.view.subviews.count > 1) {
-            [ws.camareViewController.view removeFromSuperview];
-            ws.camareViewController.view = nil;
-        }
         [ws zf_dismess];
     };
-    //点击选中
+    //点击下一步
     self.photoHeadView.chooseBlock = ^(){
-        if (ws.view.subviews.count > 1) {
-            [ws.camareViewController.view removeFromSuperview];
-            ws.camareViewController.view = nil;
-        }
+
         if ([ws.delegate respondsToSelector:@selector(photoPickerViewController:didSelectPhotos:)]) {
             [ws.delegate photoPickerViewController:ws didSelectPhotos:[ws.notificationModel.seletedPhotos copy]];
         }
+        [ws dismissViewControllerAnimated:YES completion:NULL];
     };
     //点击标题
     self.photoHeadView.titleBlock = ^(){
         [ws zf_showPhotoViewController];
     };
     
-///-------布局
+    ///-------布局
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_photoHeadView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_photoHeadView)]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_collectionView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_collectionView)]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[_photoHeadView(==64)]-0-[_collectionView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_photoHeadView,_collectionView)]];
 }
 
-//下来选择
+//下拉选择
 -(void)zf_showPhotoViewController{
     ZFPopShowPhotoViewController *showViewController = [[ZFPopShowPhotoViewController alloc] init];
     showViewController.dataArr = self.sectionCollectResults;
@@ -270,16 +262,53 @@
     NSInteger index = self.dataArr.count - indexPath.item - 1;
     id data = self.dataArr[index];
     if ([data isKindOfClass:[UIImage class]]) {
-        [self zf_goToDetailAnimation];
-        
-    }else{
-        
-        PHAsset *asset = (PHAsset *)data;
-        ZFBrowsePhotoViewController *browsePhotoViewController = [[ZFBrowsePhotoViewController alloc] init];
-        NSLog(@"%@",self.navigationController);
+        [self zf_goToDetailAnimation];        
+    }else{        
+//        PHAsset *asset = (PHAsset *)data;
+        ZFBrowsePhotoViewController *browsePhotoViewController = [self zfPushDataWithIndexPath:indexPath];
         [self.navigationController pushViewController:browsePhotoViewController animated:YES];
     }
 }
+
+- (nullable UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location NS_AVAILABLE_IOS(9_0){
+    
+    UICollectionView *collectionView = (UICollectionView *)[previewingContext sourceView];
+    NSIndexPath *indexPath = [collectionView indexPathForItemAtPoint:location];
+    
+    ZFBrowsePhotoViewController *browsePhotoViewController = [self zfPushDataWithIndexPath:indexPath];
+    browsePhotoViewController.view.frame = self.view.frame;
+
+    return browsePhotoViewController;
+}
+
+- (void)previewingContext:(id <UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit NS_AVAILABLE_IOS(9_0){
+    
+    viewControllerToCommit.hidesBottomBarWhenPushed = YES;
+    
+    [self showViewController:viewControllerToCommit sender:self];
+    
+}
+
+-(ZFBrowsePhotoViewController *)zfPushDataWithIndexPath:(NSIndexPath *)indexPath{
+    
+    ZFBrowsePhotoViewController *browsePhotoViewController = [[ZFBrowsePhotoViewController alloc] init];
+    browsePhotoViewController.photoItems = self.dataArr;
+    browsePhotoViewController.currentIndex = indexPath.item;
+    browsePhotoViewController.selectedAssetsDic = self.selectedAssetsDic;
+    browsePhotoViewController.notificationModel = self.notificationModel;
+    browsePhotoViewController.maxCount = self.maxCount;
+    __weak ZFPhotoViewController *ws = self;
+    browsePhotoViewController.cancelBrowBlock = ^(NSIndexPath *lastIndexPath) {
+        [ws.collectionView reloadData];
+        if (lastIndexPath.item > indexPath.item) {
+            [ws.collectionView scrollToItemAtIndexPath:lastIndexPath atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
+        }else{
+            [ws.collectionView scrollToItemAtIndexPath:lastIndexPath atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
+        }
+    };
+    return browsePhotoViewController;
+}
+
 
 ///外部传入 是否选中状态
 -(void)setSelectItems:(NSArray<PHAsset *> *)selectItems{
@@ -292,29 +321,6 @@
     
 }
 
-// 进入相机的动画
-- (void)zf_goToDetailAnimation{
-    if (self.view.subviews.count < 2) {
-        [self.view addSubview:_camareViewController.view];
-    }
-    __weak ZFPhotoViewController *ws = self;
-    [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionLayoutSubviews animations:^{
-        ws.camareViewController.view.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeight);
-        ws.contentView.frame = CGRectMake(0, kScreenHeight,kScreenWidth, kScreenHeight);
-    } completion:^(BOOL finished) {
-        [ws.camareViewController zf_onpenAnnimation];
-    }];
-}
-// 返回第一个界面的动画
-- (void)zf_backToFirstPageAnimation {
-     __weak ZFPhotoViewController *ws = self;
-    [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionLayoutSubviews animations:^{
-        ws.camareViewController.view.frame = CGRectMake(0,-kScreenHeight, kScreenWidth, kScreenHeight);
-        ws.contentView.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeight);
-    } completion:^(BOOL finished) {
-    
-    }];
-}
 
 #pragma mark - 添加插入移动删除图片事 调用
 // This callback is invoked on an arbitrary serial queue. If you need this to be handled on a specific queue, you should redispatch appropriately
@@ -416,7 +422,37 @@
     [self presentViewController:alertController animated:YES completion:nil];
     
 }
-#pragma mark ---get set 方法
+#pragma mark - 代理
+
+//- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated{
+//    BOOL isfirstPage = [viewController isKindOfClass:[self class]];
+//    [self.navigationController setNavigationBarHidden:isfirstPage animated:YES];
+//}
+
+#pragma mark --  动画 方法
+// 进入相机的动画
+- (void)zf_goToDetailAnimation{
+    if (self.view.subviews.count < 2) {
+        [self.view addSubview:_camareViewController.view];
+    }
+    __weak ZFPhotoViewController *ws = self;
+    [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionLayoutSubviews animations:^{
+        ws.camareViewController.view.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeight);
+        ws.contentView.frame = CGRectMake(0, kScreenHeight,kScreenWidth, kScreenHeight);
+    } completion:^(BOOL finished) {
+        [ws.camareViewController zf_onpenAnnimation];
+    }];
+}
+// 返回第一个界面的动画
+- (void)zf_backToFirstPageAnimation {
+    __weak ZFPhotoViewController *ws = self;
+    [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionLayoutSubviews animations:^{
+        ws.camareViewController.view.frame = CGRectMake(0,-kScreenHeight, kScreenWidth, kScreenHeight);
+        ws.contentView.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeight);
+    } completion:^(BOOL finished) {
+        
+    }];
+}
 
 #pragma mark --- 懒加载
 -(UIView *)contentView{
@@ -425,7 +461,6 @@
     }
     return _contentView;
 }
-
 -(NSMutableArray *)dataArr{
     if (_dataArr == nil) {
         _dataArr = [NSMutableArray array];
@@ -451,9 +486,9 @@
     return _sectionCollectResults;
 }
 
--(NSNotificationModel *)notificationModel{
+-(ZFNSNotificationModel *)notificationModel{
     if (_notificationModel == nil) {
-        _notificationModel = [[NSNotificationModel alloc] init];
+        _notificationModel = [[ZFNSNotificationModel alloc] init];
     }
     return _notificationModel;
 }
