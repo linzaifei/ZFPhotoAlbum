@@ -1,6 +1,6 @@
 # ZFPhotoAlbum
 /*!
-* 排显示数目 默认 3 (3 - 5)
+排显示数目 默认 3 (3 - 5)
 */
 
 @property(assign,nonatomic)NSInteger columnCount;
