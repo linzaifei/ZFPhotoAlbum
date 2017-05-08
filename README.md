@@ -6,31 +6,31 @@
 @property(assign,nonatomic)NSInteger columnCount;
 
 /*!
-*  列间距，默认是1
+ 列间距，默认是1
 */
 
 @property(assign,nonatomic)NSInteger columnSpacing;
 
 /*!
-* 行间距，默认是1
+ 行间距，默认是1
 */
 
 @property(assign,nonatomic)NSInteger rowSpacing;
 
 /*!
-* section与collectionView的间距，默认是（5，5，5，5）
+ section与collectionView的间距，默认是（5，5，5，5）
 */
 
 @property(assign,nonatomic)UIEdgeInsets sectionInset;
 
 /*!
-* 最大选择数量 默认9
+ 最大选择数量 默认9
 */
 
 @property(assign,nonatomic)NSInteger maxCount;
 
 /*!
-* 选中的照片
+ 选中的照片
 */
 
 @property(strong,nonatomic)NSArray<PHAsset *>*selectItems;
