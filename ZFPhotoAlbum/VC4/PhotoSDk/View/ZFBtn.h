@@ -11,4 +11,6 @@
 @interface ZFBtn : UIButton
 //是否选择
 @property(assign,nonatomic)BOOL isCollect;
+//设置可点击的范围 默认 -30
+@property(assign,nonatomic)CGFloat pointInsder;
 @end

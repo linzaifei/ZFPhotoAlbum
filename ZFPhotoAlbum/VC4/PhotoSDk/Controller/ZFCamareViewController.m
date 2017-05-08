@@ -11,9 +11,8 @@
 #import <Photos/Photos.h>
 #import "ZFPhotoHeadView.h"
 #import "RemindView.h"
+#import "ZFPhotoAlbum.h"
 
-#define kScreenHeight   [UIScreen mainScreen].bounds.size.height
-#define kScreenWidth    [UIScreen mainScreen].bounds.size.width
 
 #define bottom_height 130 //微博距离
 #define top_height 64 //顶部距离

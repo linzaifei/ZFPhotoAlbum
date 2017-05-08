@@ -11,6 +11,7 @@
 #import "ZFSelectView.h"
 #import "Masonry.h"
 
+#import "ZFPickerPhotoViewController.h"
 
 @interface ZFPhotoBrowerViewController ()<ZFPublishViewDataSource,ZFPublishViewDelegate,ZFPhotoPickerViewControllerDelegate>
 @property(strong,nonatomic)NSMutableArray *dataArr;
@@ -52,8 +53,8 @@
 }
 //点击添加照片
 -(void)publishViewClickAddPhoto:(ZFSelectView *)publishView{
-    ZFPhotoViewController *photoViewController = [[ZFPhotoViewController alloc] init];
-    photoViewController.delegate = self;
+    ZFPickerPhotoViewController *photoViewController = [[ZFPickerPhotoViewController alloc] init];
+    photoViewController.pickerDelegate = self;
     photoViewController.selectItems = self.dataArr;
     [self presentViewController:photoViewController animated:YES completion:NULL];
 }
@@ -78,7 +79,6 @@
 - (void)photoPickerViewController:(ZFPhotoViewController *)pickerViewController didSelectPhotos:(NSArray<PHAsset *> *)photos{
     self.dataArr = [NSMutableArray arrayWithArray:photos];
     [self.selectView reloadData];
-    [pickerViewController dismissViewControllerAnimated:YES completion:NULL];
 }
 -(NSMutableArray *)dataArr{
     if (_dataArr == nil) {

@@ -10,7 +10,7 @@
 @class  PHAsset;
 
 //用来监听数组变化
-@interface NSNotificationModel : NSObject
+@interface ZFNSNotificationModel : NSObject
 
 @property(strong,nonatomic)NSMutableArray <PHAsset *>*seletedPhotos;
 
