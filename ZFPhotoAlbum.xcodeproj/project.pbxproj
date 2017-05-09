@@ -11,6 +11,7 @@
 		352A31C31EC060A200E4AFEB /* ZFPickerPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 352A31C21EC060A200E4AFEB /* ZFPickerPhotoViewController.m */; };
 		352A31C91EC060DA00E4AFEB /* ZFBrowCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 352A31C61EC060DA00E4AFEB /* ZFBrowCollectionCell.m */; };
 		352A31CA1EC060DA00E4AFEB /* ZFBrowsePhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 352A31C81EC060DA00E4AFEB /* ZFBrowsePhotoViewController.m */; };
+		352A31D01EC1574800E4AFEB /* ZFPushTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 352A31CF1EC1574800E4AFEB /* ZFPushTransition.m */; };
 		353B8E361EB9B7AB00E65815 /* ZFCamareViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 353B8E281EB9B7AB00E65815 /* ZFCamareViewController.m */; };
 		353B8E371EB9B7AB00E65815 /* ZFPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 353B8E2A1EB9B7AB00E65815 /* ZFPhotoViewController.m */; };
 		353B8E381EB9B7AB00E65815 /* ZFPopShowPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 353B8E2C1EB9B7AB00E65815 /* ZFPopShowPhotoViewController.m */; };
@@ -72,6 +73,8 @@
 		352A31C61EC060DA00E4AFEB /* ZFBrowCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFBrowCollectionCell.m; sourceTree = "<group>"; };
 		352A31C71EC060DA00E4AFEB /* ZFBrowsePhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFBrowsePhotoViewController.h; sourceTree = "<group>"; };
 		352A31C81EC060DA00E4AFEB /* ZFBrowsePhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFBrowsePhotoViewController.m; sourceTree = "<group>"; };
+		352A31CE1EC1574800E4AFEB /* ZFPushTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPushTransition.h; sourceTree = "<group>"; };
+		352A31CF1EC1574800E4AFEB /* ZFPushTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPushTransition.m; sourceTree = "<group>"; };
 		353B8E271EB9B7AB00E65815 /* ZFCamareViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFCamareViewController.h; sourceTree = "<group>"; };
 		353B8E281EB9B7AB00E65815 /* ZFCamareViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFCamareViewController.m; sourceTree = "<group>"; };
 		353B8E291EB9B7AB00E65815 /* ZFPhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoViewController.h; sourceTree = "<group>"; };
@@ -170,6 +173,8 @@
 		352A31C41EC060DA00E4AFEB /* ZFPhotoBrow */ = {
 			isa = PBXGroup;
 			children = (
+				352A31CE1EC1574800E4AFEB /* ZFPushTransition.h */,
+				352A31CF1EC1574800E4AFEB /* ZFPushTransition.m */,
 				352A31C51EC060DA00E4AFEB /* ZFBrowCollectionCell.h */,
 				352A31C61EC060DA00E4AFEB /* ZFBrowCollectionCell.m */,
 				352A31C71EC060DA00E4AFEB /* ZFBrowsePhotoViewController.h */,
@@ -530,6 +535,7 @@
 				353B8E371EB9B7AB00E65815 /* ZFPhotoViewController.m in Sources */,
 				355F290A1EAEDFC800DC5184 /* ZFPersentTransition.m in Sources */,
 				355F29071EAEDFC800DC5184 /* ZFPhotoBrowerViewController.m in Sources */,
+				352A31D01EC1574800E4AFEB /* ZFPushTransition.m in Sources */,
 				355F29311EAEE03100DC5184 /* MASConstraintMaker.m in Sources */,
 				355F29351EAEE03100DC5184 /* NSArray+MASAdditions.m in Sources */,
 				355F28B51EAEDF9F00DC5184 /* main.m in Sources */,

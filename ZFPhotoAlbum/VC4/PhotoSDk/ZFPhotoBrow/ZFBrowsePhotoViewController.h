@@ -15,10 +15,12 @@ typedef NS_ENUM(NSInteger,ZFBrowsePhotoType){
 };
 
 typedef void(^CancelBrowBlock)(NSIndexPath *indexPath);
-@interface ZFBrowsePhotoViewController : UIViewController
+@interface ZFBrowsePhotoViewController : UIViewController<UINavigationControllerDelegate>
 
 @property(strong,nonatomic)NSMutableArray *photoItems;//图片数组
 @property(assign,nonatomic)NSInteger currentIndex;//当前选择的index 默认0
+@property(strong,nonatomic)UIView *sourceView;//原始视图
+//@property(strong,nonatomic)UIView *sourceView;//原始视图
 
 @property(assign,nonatomic)ZFBrowsePhotoType browType;
 @property(copy,nonatomic)CancelBrowBlock cancelBrowBlock;//取消
@@ -26,5 +28,5 @@ typedef void(^CancelBrowBlock)(NSIndexPath *indexPath);
 
 @property(strong,nonatomic)NSMutableDictionary *selectedAssetsDic;//选择assest
 @property(strong,nonatomic)ZFNSNotificationModel *notificationModel;//监听数组
-@property(assign,nonatomic)NSInteger maxCount;//
+@property(assign,nonatomic)NSInteger maxCount;// 最大数目
 @end

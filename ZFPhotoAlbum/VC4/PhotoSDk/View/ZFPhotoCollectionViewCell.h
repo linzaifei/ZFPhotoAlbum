@@ -14,6 +14,7 @@
 
 //设置数据
 -(void)zf_setAssest:(id)data;
+
 //点击后回调
 @property(copy,nonatomic)void(^btnSelectBlock)(PHAsset *asset,BOOL isSelect);
 //是否被点击

@@ -11,7 +11,7 @@
 #import "ZFBrowCollectionCell.h"
 #import "ZFPhotoHeadView.h"
 #import "ZFNSNotificationModel.h"
-
+#import "ZFPushTransition.h"
 #define  MIN_Space 20
 @interface ZFBrowsePhotoViewController ()<UICollectionViewDelegateFlowLayout,UICollectionViewDataSource>
 @property(strong,nonatomic)UICollectionView *collectionView;
@@ -25,10 +25,12 @@
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
 //   [self.collectionView scrollToItemAtIndexPath:self.indexPath atScrollPosition:UICollectionViewScrollPositionRight animated:YES];
+//    self.navigationController.delegate = self;
 }
 -(void)viewWillLayoutSubviews{
     [super viewWillLayoutSubviews];
 //    [self.collectionView scrollToItemAtIndexPath:self.indexPath atScrollPosition:UICollectionViewScrollPositionRight animated:NO];
+    
 }
 
 - (void)viewDidLoad {
@@ -53,8 +55,8 @@
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.delegate = self;
     self.collectionView.dataSource = self;
-    //减速时的速率,快速减速
-    self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
+    //减速时的速率,快速减速()
+//    self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     [self.view addSubview:self.collectionView];
     [self.collectionView registerClass:[ZFBrowCollectionCell class] forCellWithReuseIdentifier:NSStringFromClass([ZFBrowCollectionCell class])];
     
@@ -148,6 +150,19 @@
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
     if ([keyPath isEqualToString:@"seletedPhotos"]) {
         _browHeadViewBar.count = self.notificationModel.seletedPhotos.count;
+    }
+}
+
+#pragma mark - 代理
+- (nullable id <UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
+                                            animationControllerForOperation:(UINavigationControllerOperation)operation
+                                                         fromViewController:(UIViewController *)fromVC
+                                                           toViewController:(UIViewController *)toVC  NS_AVAILABLE_IOS(7_0){
+
+    if(operation == UINavigationControllerOperationPush){
+        return [[ZFPushTransition alloc] init];
+    }else{
+        return nil;
     }
 }
 

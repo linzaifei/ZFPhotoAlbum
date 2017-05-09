@@ -295,6 +295,20 @@
 }
 
 -(ZFBrowsePhotoViewController *)zfPushDataWithIndexPath:(NSIndexPath *)indexPath{
+    ZFPhotoCollectionViewCell *cell = (ZFPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
+    NSInteger index = self.dataArr.count - indexPath.item - 1;
+    id data = self.dataArr[index];
+    UIView *view = nil;
+    if ([data isKindOfClass:[PHAsset class]]) {
+        PHAsset *asset = (PHAsset *)data;
+        if (asset.mediaSubtypes == PHAssetMediaSubtypePhotoLive) {
+            view = cell.contentView.subviews[1];
+        }else{
+            view = [cell.contentView.subviews firstObject];
+        }
+    }
+    NSLog(@"%@",cell.contentView.subviews);
+    
     
     ZFBrowsePhotoViewController *browsePhotoViewController = [[ZFBrowsePhotoViewController alloc] init];
     browsePhotoViewController.photoItems = self.dataArr;
@@ -302,6 +316,8 @@
     browsePhotoViewController.selectedAssetsDic = self.selectedAssetsDic;
     browsePhotoViewController.notificationModel = self.notificationModel;
     browsePhotoViewController.maxCount = self.maxCount;
+    browsePhotoViewController.sourceView = view;
+    self.navigationController.delegate = browsePhotoViewController;
     __weak ZFPhotoViewController *ws = self;
     browsePhotoViewController.cancelBrowBlock = ^(NSIndexPath *lastIndexPath) {
         [ws.collectionView reloadData];
