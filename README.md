@@ -1,4 +1,8 @@
 # ZFPhotoAlbum
+<<<<<<< HEAD
+=======
+//效果图 
+>>>>>>> 45f981cd7e8097cc55bee53f166189139f143f21
 
 ![image](https://github.com/linzaifei/ZFPhotoAlbum/blob/master/ZFPhotoAlbum/ZFPhotoAlbumPhotos/ZF.gif)
 
