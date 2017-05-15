@@ -11,7 +11,7 @@
 #import "ZFBrowCollectionCell.h"
 #import "ZFPhotoHeadView.h"
 #import "ZFNSNotificationModel.h"
-#import "ZFPushTransition.h"
+#import "ZFCommonTransition.h"
 #define  MIN_Space 20
 @interface ZFBrowsePhotoViewController ()<UICollectionViewDelegateFlowLayout,UICollectionViewDataSource>
 @property(strong,nonatomic)UICollectionView *collectionView;
@@ -160,7 +160,7 @@
                                                            toViewController:(UIViewController *)toVC  NS_AVAILABLE_IOS(7_0){
 
     if(operation == UINavigationControllerOperationPush){
-        return [[ZFPushTransition alloc] init];
+        return [[ZFCommonTransition alloc] init];
     }else{
         return nil;
     }

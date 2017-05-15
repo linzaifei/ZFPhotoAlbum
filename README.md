@@ -1,4 +1,7 @@
 # ZFPhotoAlbum
+
+![image](https://github.com/linzaifei/ZFPhotoAlbum/blob/master/ZFPhotoAlbum/ZFPhotoAlbumPhotos/ZF.gif)
+
 /*!
 排显示数目 默认 3 (3 - 5)
 */

@@ -7,7 +7,7 @@
 //
 
 #import "ZFPhotoPresentationVC.h"
-
+#import "ZFPhotoAlbum.h"
 
 #define frameOffset 240 //距离顶部高度
 @interface ZFPhotoPresentationVC()
@@ -16,7 +16,9 @@
 @implementation ZFPhotoPresentationVC
 -(instancetype)initWithPresentedViewController:(UIViewController *)presentedViewController presentingViewController:(UIViewController *)presentingViewController{
     if (self = [super initWithPresentedViewController:presentedViewController presentingViewController:presentingViewController]) {
-        self.height = frameOffset;
+        if (!self.height) {
+            self.height = frameOffset;
+        }
     }
     return self;
 }
@@ -73,6 +75,7 @@
 
 -(void)close{
     [self.presentedViewController dismissViewControllerAnimated:YES completion:NULL];
+    [[NSNotificationCenter defaultCenter] postNotificationName:ZFPopDismessNotfcation object:nil];
 }
 
 -(void)dealloc{

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ZFPopShowPhotoViewController : UIViewController
+@interface ZFPopShowPhotoViewController : UIViewController<UIViewControllerTransitioningDelegate>
 
 @property(strong,nonatomic)NSArray *dataArr;
 @property(copy,nonatomic)void(^didSelectBlock)(NSArray *dataArr,NSInteger index);

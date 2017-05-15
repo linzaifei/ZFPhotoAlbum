@@ -7,13 +7,13 @@
 //
 
 #import "ZFPopShowPhotoViewController.h"
-#import "ZFPersentTransition.h"
-#import <Photos/Photos.h>
+#import "ZFPhotoAlbum.h"
 #import "ZFPhotoTableViewCell.h"
 #import "ZFPhotoPresentationVC.h"
-
+#import "ZFCommonTransition.h"
 @interface ZFPopShowPhotoViewController ()<UITableViewDelegate,UITableViewDataSource>
-@property(strong,nonatomic)ZFPersentTransition *persentTransition;
+@property(strong,nonatomic)ZFCommonTransition *commonTransition;
+
 @end
 
 @implementation ZFPopShowPhotoViewController
@@ -27,7 +27,7 @@
     self = [super initWithCoder:aDecoder];
     if (self) {
         self.modalPresentationStyle = UIModalPresentationCustom; //自己定义弹出动画 不使用系统的
-        self.transitioningDelegate  = self.persentTransition;
+        self.transitioningDelegate  = self;
         
     }
     return self;
@@ -38,7 +38,7 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.modalPresentationStyle = UIModalPresentationCustom; //自己定义弹出动画 不使用系统的
-        self.transitioningDelegate  = self.persentTransition;
+        self.transitioningDelegate  = self;
     }
     return self;
 }
@@ -50,7 +50,7 @@
     [self.view addSubview:tableView];
     [tableView registerClass:[ZFPhotoTableViewCell class] forCellReuseIdentifier:NSStringFromClass([ZFPhotoTableViewCell class])];
     tableView.translatesAutoresizingMaskIntoConstraints = NO;
-    
+    tableView.separatorColor = [UIColor clearColor];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[tableView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(tableView)]];
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[tableView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(tableView)]];
     
@@ -62,6 +62,7 @@
     ZFPhotoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([ZFPhotoTableViewCell class])];
     PHAssetCollection *assetCollection = self.dataArr[indexPath.row];
     cell.assetCollection = assetCollection;
+    
     return cell;
 }
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -75,11 +76,30 @@
     return 60;
 }
 
--(ZFPersentTransition *)persentTransition{
-    if (_persentTransition == nil) {
-        _persentTransition = [[ZFPersentTransition alloc] init];
+#pragma mark - NavigationDelegate
+
+- (nullable UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(nullable UIViewController *)presenting sourceViewController:(UIViewController *)source NS_AVAILABLE_IOS(8_0){
+    ZFPhotoPresentationVC *presentViewController = [[ZFPhotoPresentationVC alloc] initWithPresentedViewController:presented presentingViewController:presenting];
+      presentViewController.height = self.dataArr.count * 60 > kScreenHeight /2.0 ? kScreenHeight / 2.0 : self.dataArr.count * 60;
+    return presentViewController;
+    
+}
+- (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
+    
+    self.commonTransition.type = TransitionTypePresent;
+    return self.commonTransition;
+}
+
+- (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed{
+    self.commonTransition.type = TransitionTypeDismess;
+    return self.commonTransition;
+}
+
+-(ZFCommonTransition *)commonTransition{
+    if (_commonTransition == nil) {
+        _commonTransition = [[ZFCommonTransition alloc] init];
     }
-    return _persentTransition;
+    return _commonTransition;
 }
 
 -(void)dealloc{

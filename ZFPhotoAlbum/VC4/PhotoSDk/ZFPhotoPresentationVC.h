@@ -10,4 +10,5 @@
 
 @interface ZFPhotoPresentationVC : UIPresentationController
 @property(assign,nonatomic)CGFloat height;
+
 @end

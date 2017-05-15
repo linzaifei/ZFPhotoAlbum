@@ -38,6 +38,17 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
+#pragma mark-设置状态栏的样式
+-(UIStatusBarStyle)preferredStatusBarStyle{
+    //设置为白色
+    return UIStatusBarStyleLightContent;
+    //默认为黑色
+//    return UIStatusBarStyleDefault;
+}
+#pragma mark-设置状态栏是否隐藏（否）
+-(BOOL)prefersStatusBarHidden
+{
+    return NO;
+}
 
 @end

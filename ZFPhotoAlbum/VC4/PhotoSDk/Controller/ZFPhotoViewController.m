@@ -15,7 +15,7 @@
 #import "ZFBrowsePhotoViewController.h"
 #import "ZFCamareViewController.h"
 #import "ZFPhotoAlbum.h"
-
+#import "ZFPhotoPresentationVC.h"
 @interface ZFPhotoViewController ()<UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UINavigationControllerDelegate, UIImagePickerControllerDelegate,PHPhotoLibraryChangeObserver,UIViewControllerPreviewingDelegate>
 @property(strong,nonatomic)UICollectionView *collectionView;
 @property(strong,nonatomic)NSMutableArray *dataArr;
@@ -38,6 +38,7 @@
     [self zf_setUI];
     [self zf_permission];
     [self.notificationModel addObserver:self forKeyPath:@"seletedPhotos" options:NSKeyValueObservingOptionNew context:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(zf_closeNotifer) name:ZFPopDismessNotfcation object:nil];
     
 }
 -(instancetype)init{
@@ -53,7 +54,6 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-//    self.navigationController.delegate = self;
      [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
@@ -100,13 +100,12 @@
     
     //////------block --------
     __weak ZFPhotoViewController *ws = self;
+    
     //点击取消
-  
     self.photoHeadView.cancelBlock = ^(){
         [ws zf_dismess];
     };
     //点击下一步
-    
     self.photoHeadView.chooseBlock = ^(){
         if ([ws.delegate respondsToSelector:@selector(photoPickerViewController:didSelectPhotos:)]) {
             [ws.delegate photoPickerViewController:ws didSelectPhotos:[ws.notificationModel.seletedPhotos copy]];
@@ -128,6 +127,7 @@
 //下拉选择
 -(void)zf_showPhotoViewController{
     ZFPopShowPhotoViewController *showViewController = [[ZFPopShowPhotoViewController alloc] init];
+
     showViewController.dataArr = self.sectionCollectResults;
     __weak ZFPhotoViewController *ws = self;
     showViewController.didSelectBlock = ^(NSArray *dataArr, NSInteger index) {
@@ -167,22 +167,29 @@
 }
 
 -(void)zf_getFirstData:(PHFetchResult *)assets WithAdd:(BOOL)isadd {
+    UIApplication *application = [UIApplication sharedApplication];
     [self.dataArr removeAllObjects];
     __weak ZFPhotoViewController *ws = self;
     [assets enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         if (isadd && idx == assets.count - 1) {
-          [ws.selectedAssetsDic setValue:obj forKey:obj.localIdentifier];
+            if (application.applicationState == UIApplicationStateActive) {
+                [ws.selectedAssetsDic setValue:obj forKey:obj.localIdentifier];
+            }
         }
         [ws.dataArr addObject:obj];
     }];
    
     [self.selectedAssetsDic enumerateKeysAndObjectsUsingBlock:^(NSString *key, PHAsset * _Nonnull obj, BOOL * _Nonnull stop) {
         if (ws.notificationModel.seletedPhotos.count == 0) {
+            if (application.applicationState == UIApplicationStateActive) {
             [[ws.notificationModel mutableArrayValueForKey:@"seletedPhotos"] addObject:obj];
+            }
         }else if (ws.notificationModel.seletedPhotos.count < ws.selectedAssetsDic.count) {
             [ws.notificationModel.seletedPhotos enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
                 if (![key isEqualToString:obj1.localIdentifier]) {
+                    if (application.applicationState == UIApplicationStateActive) {
                     [[ws.notificationModel mutableArrayValueForKey:@"seletedPhotos"] addObject:obj];
+                    }
                 }
             }];
         }else{
@@ -295,20 +302,6 @@
 }
 
 -(ZFBrowsePhotoViewController *)zfPushDataWithIndexPath:(NSIndexPath *)indexPath{
-    ZFPhotoCollectionViewCell *cell = (ZFPhotoCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
-    NSInteger index = self.dataArr.count - indexPath.item - 1;
-    id data = self.dataArr[index];
-    UIView *view = nil;
-    if ([data isKindOfClass:[PHAsset class]]) {
-        PHAsset *asset = (PHAsset *)data;
-        if (asset.mediaSubtypes == PHAssetMediaSubtypePhotoLive) {
-            view = cell.contentView.subviews[1];
-        }else{
-            view = [cell.contentView.subviews firstObject];
-        }
-    }
-    NSLog(@"%@",cell.contentView.subviews);
-    
     
     ZFBrowsePhotoViewController *browsePhotoViewController = [[ZFBrowsePhotoViewController alloc] init];
     browsePhotoViewController.photoItems = self.dataArr;
@@ -316,7 +309,7 @@
     browsePhotoViewController.selectedAssetsDic = self.selectedAssetsDic;
     browsePhotoViewController.notificationModel = self.notificationModel;
     browsePhotoViewController.maxCount = self.maxCount;
-    browsePhotoViewController.sourceView = view;
+//    browsePhotoViewController.sourceView = view;
     self.navigationController.delegate = browsePhotoViewController;
     __weak ZFPhotoViewController *ws = self;
     browsePhotoViewController.cancelBrowBlock = ^(NSIndexPath *lastIndexPath) {
@@ -443,6 +436,11 @@
     [self presentViewController:alertController animated:YES completion:nil];
     
 }
+#pragma mark - 通知
+-(void)zf_closeNotifer{
+    [self.photoHeadView zfScoll];
+}
+
 #pragma mark - 代理
 
 //- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated{
@@ -580,7 +578,7 @@
 -(void)dealloc{
     //销毁观察相册变化的观察者
     [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
-//    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self.notificationModel removeObserver:self forKeyPath:@"seletedPhotos"];
     NSLog(@"销毁 %s",__FUNCTION__);
 }

@@ -8,7 +8,7 @@
 
 #import "ZFPhotoHeadView.h"
 @interface ZFPhotoHeadView()
-@property(strong,nonatomic)UIButton *titleBtn;
+@property(strong,nonatomic)ZFTitleView *titleBtn;
 @property(strong,nonatomic)UIButton *chooseBtn;
 @end
 @implementation ZFPhotoHeadView
@@ -30,14 +30,10 @@
     [backBtn setImage:[UIImage imageNamed:[@"ZFPhotoBundle.bundle" stringByAppendingPathComponent:@"camera_edit_cross.png"]] forState:UIControlStateNormal];
     [backBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 1, 0, 0)];
     
-    self.titleBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.titleBtn setTitle:NSLocalizedString(@"全部相册", nil) forState:UIControlStateNormal];
-    [self.titleBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    self.titleBtn.titleLabel.font = [UIFont systemFontOfSize:15];
-    self.titleBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
-    self.titleBtn.frame = CGRectMake(0, 0, 70, 30);
-
-
+    self.titleBtn = [[ZFTitleView alloc] initWithFrame:CGRectMake(0, 0, 90, 30)];
+    self.titleBtn.title = NSLocalizedString(@"全部相册", nil);
+    
+    
     self.chooseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.chooseBtn setTitle:NSLocalizedString(@"下一步", nil) forState:UIControlStateNormal];
     [self.chooseBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
@@ -48,7 +44,6 @@
     self.chooseBtn.layer.cornerRadius = 3;
     self.chooseBtn.userInteractionEnabled = NO;
     [self.chooseBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 10, 0, 10)];
-    
     
     
     UINavigationItem *item = [[UINavigationItem alloc] init];
@@ -79,6 +74,7 @@
             }
             break;
         case 2:
+            [self.titleBtn zfScoll];
             if (self.titleBlock) {
                 self.titleBlock();
             }
@@ -90,7 +86,10 @@
 
 -(void)setTitle:(NSString *)title{
     _title = title;
-    [self.titleBtn setTitle:title forState:UIControlStateNormal];
+    self.titleBtn.title = title;
+}
+-(void)zfScoll{
+    [self.titleBtn zfScoll];
 }
 
 -(void)setCount:(NSInteger)count{
@@ -110,6 +109,53 @@
     }
     
 }
+
+
+@end
+
+
+@interface ZFTitleView ()
+@property(strong,nonatomic)UILabel *label;
+@property(strong,nonatomic)UIImageView *imageV;
+@end
+@implementation ZFTitleView
+
+-(instancetype)initWithFrame:(CGRect)frame{
+    if (self= [super initWithFrame:frame] ) {
+        [self setUI];
+    }
+    return self;
+}
+-(void)setUI{
+
+    self.label = [UILabel new];
+    self.label.textColor = [UIColor blackColor];
+    self.label.font = [UIFont systemFontOfSize:15];
+    self.label.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:self.label];
+    
+    self.imageV = [UIImageView new];
+    self.imageV.image = [UIImage imageNamed:[@"ZFPhotoBundle.bundle" stringByAppendingPathComponent:@"common_icon_arrow.png"]];
+    self.imageV.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:self.imageV];
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-2-[_label]-5-[_imageV]-2-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_label,_imageV)]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:_label attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:_imageV attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
+}
+
+-(void)setTitle:(NSString *)title{
+    _title = title;
+    _label.text = title;
+}
+-(void)zfScoll{
+    __weak ZFTitleView *ws = self;
+    [UIView animateWithDuration:0.3 animations:^{
+        ws.imageV.transform = CGAffineTransformRotate(ws.imageV.transform, M_PI);
+    }];
+}
+
+
 
 @end
 
@@ -147,7 +193,7 @@
     flashBtn.frame = CGRectMake(0, 0, 40, 25);
     
     UIButton *changeBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [changeBtn setImage:[UIImage imageNamed:[@"ZFPhotoBundle.bundle" stringByAppendingPathComponent:@"camera_shift_camera_highlighted.png"]] forState:UIControlStateNormal];
+    [changeBtn setImage:[UIImage imageNamed:[@"ZFPhotoBundle.bundle" stringByAppendingPathComponent:@"camera_overturn.png"]] forState:UIControlStateNormal];
     [changeBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
     changeBtn.titleLabel.font = [UIFont systemFontOfSize:15];
     changeBtn.frame = CGRectMake(0, 0, 40, 25);

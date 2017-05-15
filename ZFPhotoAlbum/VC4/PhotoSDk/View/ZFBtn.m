@@ -63,4 +63,13 @@
     return CGRectContainsPoint(btnBounds, point);
 }
 
+//-(void)drawRect:(CGRect)rect{
+//    CGContextRef context = UIGraphicsGetCurrentContext();
+//    CGContextSetRGBStrokeColor(context, 1, 0, 1, 1);
+////    UIFont *font = [UIFont systemFontOfSize:13];
+//    [@"5" drawInRect:self.bounds withAttributes:@{NSFontAttributeName : [UIFont systemFontOfSize:13],NSForegroundColorAttributeName :[UIColor blueColor],NSStrokeColorAttributeName :[UIColor whiteColor]}];
+//
+//    CGContextDrawPath(context, kCGPathStroke);
+//}
+
 @end

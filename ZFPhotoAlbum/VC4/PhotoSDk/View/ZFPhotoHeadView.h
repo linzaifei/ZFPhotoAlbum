@@ -10,6 +10,7 @@
 @class ZFCamareHeadView;
 @class ZFTakePhotoHeadView;
 @class ZFBrowHeadViewBar;
+@class ZFTitleView;
 
 typedef void(^CancelBlock)();
 typedef void(^ChooseBlock)();
@@ -21,9 +22,15 @@ typedef void(^ChangeBlock)();
 @interface ZFPhotoHeadView : UINavigationBar
 @property(copy,nonatomic)NSString *title;
 @property(assign,nonatomic)NSInteger count;
+-(void)zfScoll;
 @property(copy,nonatomic)CancelBlock cancelBlock;
 @property(copy,nonatomic)ChooseBlock chooseBlock;
 @property(copy,nonatomic)TitleBlock titleBlock;
+@end
+
+@interface ZFTitleView : UIButton
+@property(copy,nonatomic)NSString *title;
+-(void)zfScoll;
 @end
 
 //相机NaviBar

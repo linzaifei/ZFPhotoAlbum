@@ -51,7 +51,7 @@
     self.selectBtn = [ZFBtn new];
     self.selectBtn.translatesAutoresizingMaskIntoConstraints = NO;
     self.selectBtn.frame = CGRectMake(0, 0, 60, 30);
-    [self.selectBtn setImage:[UIImage imageNamed:[@"ZFPhotoBundle.bundle" stringByAppendingPathComponent:@"Asset_checked_no.png"]] forState:UIControlStateNormal];
+    [self.selectBtn setImage:[UIImage imageNamed:[@"ZFPhotoBundle.bundle" stringByAppendingPathComponent:@"chooseInterest_uncheaked@3x.png"]] forState:UIControlStateNormal];
     [self.selectBtn setImage:[UIImage imageNamed:[@"ZFPhotoBundle.bundle" stringByAppendingPathComponent:@"Asset_checked.png"]] forState:UIControlStateSelected];
     [self.selectBtn addTarget:self action:@selector(clickCollect:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.selectBtn];
