@@ -13,4 +13,7 @@
 @property(assign,nonatomic)BOOL isCollect;
 //设置可点击的范围 默认 -30
 @property(assign,nonatomic)CGFloat pointInsder;
+
+//数目
+@property(assign,nonatomic)NSInteger count;
 @end

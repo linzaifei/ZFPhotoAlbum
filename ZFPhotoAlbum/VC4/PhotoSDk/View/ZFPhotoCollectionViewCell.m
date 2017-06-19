@@ -50,8 +50,8 @@
     
     self.selectBtn = [ZFBtn new];
     self.selectBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    self.selectBtn.frame = CGRectMake(0, 0, 60, 30);
-    [self.selectBtn setImage:[UIImage imageNamed:[@"ZFPhotoBundle.bundle" stringByAppendingPathComponent:@"chooseInterest_uncheaked@3x.png"]] forState:UIControlStateNormal];
+    self.selectBtn.frame = CGRectMake(0, 0, 30, 30);
+    [self.selectBtn setImage:[UIImage imageNamed:[@"ZFPhotoBundle.bundle" stringByAppendingPathComponent:@"Asset_checked_no.png"]] forState:UIControlStateNormal];
     [self.selectBtn setImage:[UIImage imageNamed:[@"ZFPhotoBundle.bundle" stringByAppendingPathComponent:@"Asset_checked.png"]] forState:UIControlStateSelected];
     [self.selectBtn addTarget:self action:@selector(clickCollect:) forControlEvents:UIControlEventTouchUpInside];
     [self.contentView addSubview:self.selectBtn];
@@ -76,6 +76,8 @@
     if ([data isKindOfClass:[UIImage class]]) {//显示第一张相机
         self.selectBtn.hidden = YES;
         self.liveImageView.hidden = YES;
+        self.livePhotoView.hidden = YES;
+        self.imageView.hidden = NO;
         self.imageView.image = data;
     }else{
         self.selectBtn.hidden = NO;
@@ -149,7 +151,7 @@
 
 -(void)setIsSelect:(BOOL)isSelect{
     self.selectBtn.selected = isSelect;
-   
+    
 }
 
 -(void)clickCollect:(ZFBtn *)btn{
@@ -158,6 +160,7 @@
             [self.livePhotoView startPlaybackWithStyle:PHLivePhotoViewPlaybackStyleFull];
         }
     }
+    
     if (self.btnSelectBlock) {
         self.btnSelectBlock(self.asset, btn.selected);
     }

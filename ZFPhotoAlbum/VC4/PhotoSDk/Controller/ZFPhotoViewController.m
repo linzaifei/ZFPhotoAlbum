@@ -143,8 +143,8 @@
 }
 
 -(void)zf_loadData{
-    dispatch_group_t group = dispatch_group_create();
-    dispatch_group_enter(group);
+//    dispatch_group_t group = dispatch_group_create();
+//    dispatch_group_enter(group);
     // 获得相机胶卷
     PHAssetCollection *Libararys = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil].lastObject;
     // 遍历相机胶卷,获取大图
@@ -158,12 +158,12 @@
         [ws zf_enumerateAssetsInAssetCollection:obj original:YES];
     }];
 
-    dispatch_group_leave(group);
-    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+//    dispatch_group_leave(group);
+//    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
         [ws zf_getFirstData:[ws.sectionResults firstObject] WithAdd:NO];
         [ws zf_addCamareImage];
         [ws.collectionView reloadData];
-    });
+//    });
 }
 
 -(void)zf_getFirstData:(PHFetchResult *)assets WithAdd:(BOOL)isadd {
@@ -179,24 +179,10 @@
         [ws.dataArr addObject:obj];
     }];
    
-    [self.selectedAssetsDic enumerateKeysAndObjectsUsingBlock:^(NSString *key, PHAsset * _Nonnull obj, BOOL * _Nonnull stop) {
-        if (ws.notificationModel.seletedPhotos.count == 0) {
-            if (application.applicationState == UIApplicationStateActive) {
-            [[ws.notificationModel mutableArrayValueForKey:@"seletedPhotos"] addObject:obj];
-            }
-        }else if (ws.notificationModel.seletedPhotos.count < ws.selectedAssetsDic.count) {
-            [ws.notificationModel.seletedPhotos enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj1, NSUInteger idx1, BOOL * _Nonnull stop1) {
-                if (![key isEqualToString:obj1.localIdentifier]) {
-                    if (application.applicationState == UIApplicationStateActive) {
-                    [[ws.notificationModel mutableArrayValueForKey:@"seletedPhotos"] addObject:obj];
-                    }
-                }
-            }];
-        }else{
-            *stop = YES;
-        }
-    }];
-
+    
+    [[ws.notificationModel mutableArrayValueForKey:@"seletedPhotos"] removeAllObjects];
+    [[ws.notificationModel mutableArrayValueForKey:@"seletedPhotos"] addObjectsFromArray:self.selectedAssetsDic.allValues];
+    
 }
 
 -(void)zf_addCamareImage{
@@ -354,8 +340,8 @@
             PHFetchResultChangeDetails *changeDetails = [changeInstance changeDetailsForFetchResult:obj];
              //判断变化对象是否为空，不为空则代表有相册有变化
             if(changeDetails != nil){
-                NSLog(@"%@",changeDetails.fetchResultAfterChanges);
-                NSLog(@"---------");
+//                NSLog(@"%@",changeDetails.fetchResultAfterChanges);
+//                NSLog(@"---------");
                 //变化后的数据替换变化前的数据
                 [updatedSectionFetchResults replaceObjectAtIndex:idx withObject:[changeDetails fetchResultAfterChanges]];
                 reloadRequired = YES;

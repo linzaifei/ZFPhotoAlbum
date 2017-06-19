@@ -62,13 +62,24 @@
     //若点击的点在新的bounds里，就返回YES
     return CGRectContainsPoint(btnBounds, point);
 }
+-(void)setCount:(NSInteger)count{
+    _count = count;
+    [self setNeedsDisplay];
+}
 
 //-(void)drawRect:(CGRect)rect{
 //    CGContextRef context = UIGraphicsGetCurrentContext();
 //    CGContextSetRGBStrokeColor(context, 1, 0, 1, 1);
-////    UIFont *font = [UIFont systemFontOfSize:13];
-//    [@"5" drawInRect:self.bounds withAttributes:@{NSFontAttributeName : [UIFont systemFontOfSize:13],NSForegroundColorAttributeName :[UIColor blueColor],NSStrokeColorAttributeName :[UIColor whiteColor]}];
-//
+//////    UIFont *font = [UIFont systemFontOfSize:13];
+////    [@"5" drawInRect:self.bounds withAttributes:@{NSFontAttributeName : [UIFont systemFontOfSize:13],NSForegroundColorAttributeName :[UIColor blueColor],NSStrokeColorAttributeName :[UIColor whiteColor]}];
+////
+//    CGRect drawRect = CGRectMake(5, 0, 20, 20);
+//    UIImage *img = [UIImage imageNamed:[@"ZFPhotoBundle.bundle" stringByAppendingPathComponent:@"chooseInterest_uncheaked.png"]];
+//    if (self.count >0) {
+//        NSString *countStr = [NSString stringWithFormat:@"%ld",self.count];
+//        [countStr drawInRect:drawRect withAttributes:@{NSFontAttributeName : [UIFont systemFontOfSize:12],NSForegroundColorAttributeName :[UIColor whiteColor],NSBackgroundColorAttributeName :[UIColor orangeColor],NSStrokeWidthAttributeName : @3,NSStrokeColorAttributeName :[UIColor redColor]}];
+//    }
+//    [img drawInRect:drawRect];
 //    CGContextDrawPath(context, kCGPathStroke);
 //}
 
