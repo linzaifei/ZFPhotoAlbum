@@ -1,6 +1,5 @@
 # ZFPhotoAlbum
 
-=======
 //效果图 
 
 ![image](https://github.com/linzaifei/ZFPhotoAlbum/blob/master/ZFPhotoAlbum/ZFPhotoAlbumPhotos/ZF.gif)
