@@ -1,15 +1,14 @@
 # ZFPhotoAlbum
-<<<<<<< HEAD
+
 =======
 //效果图 
->>>>>>> 45f981cd7e8097cc55bee53f166189139f143f21
 
 ![image](https://github.com/linzaifei/ZFPhotoAlbum/blob/master/ZFPhotoAlbum/ZFPhotoAlbumPhotos/ZF.gif)
 
+```
 /*!
 排显示数目 默认 3 (3 - 5)
 */
-
 @property(assign,nonatomic)NSInteger columnCount;
 
 /*!
@@ -45,15 +44,15 @@
 //设置代理
 
 @property (nonatomic,weak) id<ZFPhotoPickerViewControllerDelegate> pickerDelegate;
-
+```
 
 //使用相册方法 
-
+```
 ZFPickerPhotoViewController *photoViewController = [[ZFPickerPhotoViewController alloc] init];
 photoViewController.pickerDelegate = self;
 photoViewController.selectItems = self.dataArr;
 [self presentViewController:photoViewController animated:YES completion:NULL];
-
+```
 
 ![image](https://github.com/linzaifei/ZFPhotoAlbum/blob/master/ZFPhotoAlbum/ZFPhotoAlbumPhotos/camar%1Ce.png)
 ![image](https://github.com/linzaifei/ZFPhotoAlbum/blob/master/ZFPhotoAlbum/ZFPhotoAlbumPhotos/photo.png)
