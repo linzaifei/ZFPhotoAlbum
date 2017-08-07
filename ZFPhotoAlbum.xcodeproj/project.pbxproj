@@ -26,25 +26,25 @@
 		355F29371EAEE03100DC5184 /* View+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 355F292B1EAEE03100DC5184 /* View+MASAdditions.m */; };
 		355F29381EAEE03100DC5184 /* ViewController+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 355F292E1EAEE03100DC5184 /* ViewController+MASAdditions.m */; };
 		E0039D741F386A1D00C90BAD /* ZFPhotoBrowerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D431F386A1D00C90BAD /* ZFPhotoBrowerViewController.m */; };
-		E0039D751F386A1D00C90BAD /* ZFCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D471F386A1D00C90BAD /* ZFCameraViewController.m */; };
-		E0039D761F386A1D00C90BAD /* ZFPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D491F386A1D00C90BAD /* ZFPhotoViewController.m */; };
-		E0039D771F386A1D00C90BAD /* ZFPopShowPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D4B1F386A1D00C90BAD /* ZFPopShowPhotoViewController.m */; };
-		E0039D781F386A1D00C90BAD /* ZFPhotoTools.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D4E1F386A1D00C90BAD /* ZFPhotoTools.m */; };
-		E0039D791F386A1D00C90BAD /* ZFCommonTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D511F386A1D00C90BAD /* ZFCommonTransition.m */; };
-		E0039D7A1F386A1D00C90BAD /* ZFPhotoPresentationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D531F386A1D00C90BAD /* ZFPhotoPresentationVC.m */; };
-		E0039D7B1F386A1D00C90BAD /* ZFBtn.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D561F386A1D00C90BAD /* ZFBtn.m */; };
-		E0039D7C1F386A1D00C90BAD /* ZFPhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D581F386A1D00C90BAD /* ZFPhotoCollectionViewCell.m */; };
-		E0039D7D1F386A1D00C90BAD /* ZFPhotoHeadView.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D5A1F386A1D00C90BAD /* ZFPhotoHeadView.m */; };
-		E0039D7E1F386A1D00C90BAD /* ZFPhotoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D5C1F386A1D00C90BAD /* ZFPhotoTableViewCell.m */; };
-		E0039D7F1F386A1D00C90BAD /* ZFAlbumModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D5F1F386A1D00C90BAD /* ZFAlbumModel.m */; };
-		E0039D801F386A1D00C90BAD /* ZFPhotoManger.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D611F386A1D00C90BAD /* ZFPhotoManger.m */; };
-		E0039D811F386A1D00C90BAD /* ZFPhotoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D631F386A1D00C90BAD /* ZFPhotoModel.m */; };
-		E0039D821F386A1D00C90BAD /* ZFBrowCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D681F386A1D00C90BAD /* ZFBrowCollectionCell.m */; };
-		E0039D831F386A1D00C90BAD /* ZFBrowsePhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D6A1F386A1D00C90BAD /* ZFBrowsePhotoViewController.m */; };
-		E0039D841F386A1D00C90BAD /* ZFPhotoBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E0039D6B1F386A1D00C90BAD /* ZFPhotoBundle.bundle */; };
 		E0039D851F386A1D00C90BAD /* RemindView.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D6E1F386A1D00C90BAD /* RemindView.m */; };
 		E0039D861F386A1D00C90BAD /* ZFSelectPublishCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D711F386A1D00C90BAD /* ZFSelectPublishCell.m */; };
 		E0039D871F386A1D00C90BAD /* ZFSelectView.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D731F386A1D00C90BAD /* ZFSelectView.m */; };
+		E0039DB01F386AF800C90BAD /* ZFCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D8B1F386AF800C90BAD /* ZFCameraViewController.m */; };
+		E0039DB11F386AF800C90BAD /* ZFPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D8D1F386AF800C90BAD /* ZFPhotoViewController.m */; };
+		E0039DB21F386AF800C90BAD /* ZFPopShowPhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D8F1F386AF800C90BAD /* ZFPopShowPhotoViewController.m */; };
+		E0039DB31F386AF800C90BAD /* ZFPhotoTools.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D921F386AF800C90BAD /* ZFPhotoTools.m */; };
+		E0039DB41F386AF800C90BAD /* ZFCommonTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D951F386AF800C90BAD /* ZFCommonTransition.m */; };
+		E0039DB51F386AF800C90BAD /* ZFPhotoPresentationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D971F386AF800C90BAD /* ZFPhotoPresentationVC.m */; };
+		E0039DB61F386AF800C90BAD /* ZFBtn.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D9A1F386AF800C90BAD /* ZFBtn.m */; };
+		E0039DB71F386AF800C90BAD /* ZFPhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D9C1F386AF800C90BAD /* ZFPhotoCollectionViewCell.m */; };
+		E0039DB81F386AF800C90BAD /* ZFPhotoHeadView.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039D9E1F386AF800C90BAD /* ZFPhotoHeadView.m */; };
+		E0039DB91F386AF800C90BAD /* ZFPhotoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039DA01F386AF800C90BAD /* ZFPhotoTableViewCell.m */; };
+		E0039DBA1F386AF800C90BAD /* ZFAlbumModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039DA31F386AF800C90BAD /* ZFAlbumModel.m */; };
+		E0039DBB1F386AF800C90BAD /* ZFPhotoManger.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039DA51F386AF800C90BAD /* ZFPhotoManger.m */; };
+		E0039DBC1F386AF800C90BAD /* ZFPhotoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039DA71F386AF800C90BAD /* ZFPhotoModel.m */; };
+		E0039DBD1F386AF800C90BAD /* ZFBrowCollectionCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039DAC1F386AF800C90BAD /* ZFBrowCollectionCell.m */; };
+		E0039DBE1F386AF800C90BAD /* ZFBrowsePhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E0039DAE1F386AF800C90BAD /* ZFBrowsePhotoViewController.m */; };
+		E0039DBF1F386AF800C90BAD /* ZFPhotoBundle.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E0039DAF1F386AF800C90BAD /* ZFPhotoBundle.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,45 +108,45 @@
 		355F292E1EAEE03100DC5184 /* ViewController+MASAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ViewController+MASAdditions.m"; sourceTree = "<group>"; };
 		E0039D421F386A1D00C90BAD /* ZFPhotoBrowerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoBrowerViewController.h; sourceTree = "<group>"; };
 		E0039D431F386A1D00C90BAD /* ZFPhotoBrowerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoBrowerViewController.m; sourceTree = "<group>"; };
-		E0039D461F386A1D00C90BAD /* ZFCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFCameraViewController.h; sourceTree = "<group>"; };
-		E0039D471F386A1D00C90BAD /* ZFCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFCameraViewController.m; sourceTree = "<group>"; };
-		E0039D481F386A1D00C90BAD /* ZFPhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoViewController.h; sourceTree = "<group>"; };
-		E0039D491F386A1D00C90BAD /* ZFPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoViewController.m; sourceTree = "<group>"; };
-		E0039D4A1F386A1D00C90BAD /* ZFPopShowPhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPopShowPhotoViewController.h; sourceTree = "<group>"; };
-		E0039D4B1F386A1D00C90BAD /* ZFPopShowPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPopShowPhotoViewController.m; sourceTree = "<group>"; };
-		E0039D4D1F386A1D00C90BAD /* ZFPhotoTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoTools.h; sourceTree = "<group>"; };
-		E0039D4E1F386A1D00C90BAD /* ZFPhotoTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoTools.m; sourceTree = "<group>"; };
-		E0039D501F386A1D00C90BAD /* ZFCommonTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFCommonTransition.h; sourceTree = "<group>"; };
-		E0039D511F386A1D00C90BAD /* ZFCommonTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFCommonTransition.m; sourceTree = "<group>"; };
-		E0039D521F386A1D00C90BAD /* ZFPhotoPresentationVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoPresentationVC.h; sourceTree = "<group>"; };
-		E0039D531F386A1D00C90BAD /* ZFPhotoPresentationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoPresentationVC.m; sourceTree = "<group>"; };
-		E0039D551F386A1D00C90BAD /* ZFBtn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFBtn.h; sourceTree = "<group>"; };
-		E0039D561F386A1D00C90BAD /* ZFBtn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFBtn.m; sourceTree = "<group>"; };
-		E0039D571F386A1D00C90BAD /* ZFPhotoCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoCollectionViewCell.h; sourceTree = "<group>"; };
-		E0039D581F386A1D00C90BAD /* ZFPhotoCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoCollectionViewCell.m; sourceTree = "<group>"; };
-		E0039D591F386A1D00C90BAD /* ZFPhotoHeadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoHeadView.h; sourceTree = "<group>"; };
-		E0039D5A1F386A1D00C90BAD /* ZFPhotoHeadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoHeadView.m; sourceTree = "<group>"; };
-		E0039D5B1F386A1D00C90BAD /* ZFPhotoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoTableViewCell.h; sourceTree = "<group>"; };
-		E0039D5C1F386A1D00C90BAD /* ZFPhotoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoTableViewCell.m; sourceTree = "<group>"; };
-		E0039D5E1F386A1D00C90BAD /* ZFAlbumModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFAlbumModel.h; sourceTree = "<group>"; };
-		E0039D5F1F386A1D00C90BAD /* ZFAlbumModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFAlbumModel.m; sourceTree = "<group>"; };
-		E0039D601F386A1D00C90BAD /* ZFPhotoManger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoManger.h; sourceTree = "<group>"; };
-		E0039D611F386A1D00C90BAD /* ZFPhotoManger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoManger.m; sourceTree = "<group>"; };
-		E0039D621F386A1D00C90BAD /* ZFPhotoModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoModel.h; sourceTree = "<group>"; };
-		E0039D631F386A1D00C90BAD /* ZFPhotoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoModel.m; sourceTree = "<group>"; };
-		E0039D641F386A1D00C90BAD /* ZFAlbumConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFAlbumConfig.h; sourceTree = "<group>"; };
-		E0039D651F386A1D00C90BAD /* ZFPhotoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoAlbum.h; sourceTree = "<group>"; };
-		E0039D671F386A1D00C90BAD /* ZFBrowCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFBrowCollectionCell.h; sourceTree = "<group>"; };
-		E0039D681F386A1D00C90BAD /* ZFBrowCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFBrowCollectionCell.m; sourceTree = "<group>"; };
-		E0039D691F386A1D00C90BAD /* ZFBrowsePhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFBrowsePhotoViewController.h; sourceTree = "<group>"; };
-		E0039D6A1F386A1D00C90BAD /* ZFBrowsePhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFBrowsePhotoViewController.m; sourceTree = "<group>"; };
-		E0039D6B1F386A1D00C90BAD /* ZFPhotoBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ZFPhotoBundle.bundle; sourceTree = "<group>"; };
 		E0039D6D1F386A1D00C90BAD /* RemindView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RemindView.h; sourceTree = "<group>"; };
 		E0039D6E1F386A1D00C90BAD /* RemindView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RemindView.m; sourceTree = "<group>"; };
 		E0039D701F386A1D00C90BAD /* ZFSelectPublishCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFSelectPublishCell.h; sourceTree = "<group>"; };
 		E0039D711F386A1D00C90BAD /* ZFSelectPublishCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFSelectPublishCell.m; sourceTree = "<group>"; };
 		E0039D721F386A1D00C90BAD /* ZFSelectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFSelectView.h; sourceTree = "<group>"; };
 		E0039D731F386A1D00C90BAD /* ZFSelectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFSelectView.m; sourceTree = "<group>"; };
+		E0039D8A1F386AF800C90BAD /* ZFCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFCameraViewController.h; sourceTree = "<group>"; };
+		E0039D8B1F386AF800C90BAD /* ZFCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFCameraViewController.m; sourceTree = "<group>"; };
+		E0039D8C1F386AF800C90BAD /* ZFPhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoViewController.h; sourceTree = "<group>"; };
+		E0039D8D1F386AF800C90BAD /* ZFPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoViewController.m; sourceTree = "<group>"; };
+		E0039D8E1F386AF800C90BAD /* ZFPopShowPhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPopShowPhotoViewController.h; sourceTree = "<group>"; };
+		E0039D8F1F386AF800C90BAD /* ZFPopShowPhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPopShowPhotoViewController.m; sourceTree = "<group>"; };
+		E0039D911F386AF800C90BAD /* ZFPhotoTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoTools.h; sourceTree = "<group>"; };
+		E0039D921F386AF800C90BAD /* ZFPhotoTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoTools.m; sourceTree = "<group>"; };
+		E0039D941F386AF800C90BAD /* ZFCommonTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFCommonTransition.h; sourceTree = "<group>"; };
+		E0039D951F386AF800C90BAD /* ZFCommonTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFCommonTransition.m; sourceTree = "<group>"; };
+		E0039D961F386AF800C90BAD /* ZFPhotoPresentationVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoPresentationVC.h; sourceTree = "<group>"; };
+		E0039D971F386AF800C90BAD /* ZFPhotoPresentationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoPresentationVC.m; sourceTree = "<group>"; };
+		E0039D991F386AF800C90BAD /* ZFBtn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFBtn.h; sourceTree = "<group>"; };
+		E0039D9A1F386AF800C90BAD /* ZFBtn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFBtn.m; sourceTree = "<group>"; };
+		E0039D9B1F386AF800C90BAD /* ZFPhotoCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoCollectionViewCell.h; sourceTree = "<group>"; };
+		E0039D9C1F386AF800C90BAD /* ZFPhotoCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoCollectionViewCell.m; sourceTree = "<group>"; };
+		E0039D9D1F386AF800C90BAD /* ZFPhotoHeadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoHeadView.h; sourceTree = "<group>"; };
+		E0039D9E1F386AF800C90BAD /* ZFPhotoHeadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoHeadView.m; sourceTree = "<group>"; };
+		E0039D9F1F386AF800C90BAD /* ZFPhotoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoTableViewCell.h; sourceTree = "<group>"; };
+		E0039DA01F386AF800C90BAD /* ZFPhotoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoTableViewCell.m; sourceTree = "<group>"; };
+		E0039DA21F386AF800C90BAD /* ZFAlbumModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFAlbumModel.h; sourceTree = "<group>"; };
+		E0039DA31F386AF800C90BAD /* ZFAlbumModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFAlbumModel.m; sourceTree = "<group>"; };
+		E0039DA41F386AF800C90BAD /* ZFPhotoManger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoManger.h; sourceTree = "<group>"; };
+		E0039DA51F386AF800C90BAD /* ZFPhotoManger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoManger.m; sourceTree = "<group>"; };
+		E0039DA61F386AF800C90BAD /* ZFPhotoModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoModel.h; sourceTree = "<group>"; };
+		E0039DA71F386AF800C90BAD /* ZFPhotoModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFPhotoModel.m; sourceTree = "<group>"; };
+		E0039DA81F386AF800C90BAD /* ZFAlbumConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFAlbumConfig.h; sourceTree = "<group>"; };
+		E0039DA91F386AF800C90BAD /* ZFPhotoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFPhotoAlbum.h; sourceTree = "<group>"; };
+		E0039DAB1F386AF800C90BAD /* ZFBrowCollectionCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFBrowCollectionCell.h; sourceTree = "<group>"; };
+		E0039DAC1F386AF800C90BAD /* ZFBrowCollectionCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFBrowCollectionCell.m; sourceTree = "<group>"; };
+		E0039DAD1F386AF800C90BAD /* ZFBrowsePhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZFBrowsePhotoViewController.h; sourceTree = "<group>"; };
+		E0039DAE1F386AF800C90BAD /* ZFBrowsePhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZFBrowsePhotoViewController.m; sourceTree = "<group>"; };
+		E0039DAF1F386AF800C90BAD /* ZFPhotoBundle.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ZFPhotoBundle.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -202,6 +202,7 @@
 				355F28B71EAEDF9F00DC5184 /* AppDelegate.m */,
 				355F28B91EAEDF9F00DC5184 /* ViewController.h */,
 				355F28BA1EAEDF9F00DC5184 /* ViewController.m */,
+				E0039D881F386AF800C90BAD /* PhotoSDk */,
 				E0039D401F386A1D00C90BAD /* VC4 */,
 				355F28BC1EAEDF9F00DC5184 /* Main.storyboard */,
 				355F28BF1EAEDF9F00DC5184 /* Assets.xcassets */,
@@ -274,7 +275,6 @@
 			isa = PBXGroup;
 			children = (
 				E0039D411F386A1D00C90BAD /* Contoller */,
-				E0039D441F386A1D00C90BAD /* PhotoSDk */,
 				E0039D6C1F386A1D00C90BAD /* RemindView */,
 				E0039D6F1F386A1D00C90BAD /* View */,
 			);
@@ -288,94 +288,6 @@
 				E0039D431F386A1D00C90BAD /* ZFPhotoBrowerViewController.m */,
 			);
 			path = Contoller;
-			sourceTree = "<group>";
-		};
-		E0039D441F386A1D00C90BAD /* PhotoSDk */ = {
-			isa = PBXGroup;
-			children = (
-				E0039D451F386A1D00C90BAD /* Controller */,
-				E0039D4C1F386A1D00C90BAD /* Tools */,
-				E0039D4F1F386A1D00C90BAD /* Transtion */,
-				E0039D541F386A1D00C90BAD /* View */,
-				E0039D5D1F386A1D00C90BAD /* VIewModel */,
-				E0039D641F386A1D00C90BAD /* ZFAlbumConfig.h */,
-				E0039D651F386A1D00C90BAD /* ZFPhotoAlbum.h */,
-				E0039D661F386A1D00C90BAD /* ZFPhotoBrow */,
-				E0039D6B1F386A1D00C90BAD /* ZFPhotoBundle.bundle */,
-			);
-			path = PhotoSDk;
-			sourceTree = "<group>";
-		};
-		E0039D451F386A1D00C90BAD /* Controller */ = {
-			isa = PBXGroup;
-			children = (
-				E0039D461F386A1D00C90BAD /* ZFCameraViewController.h */,
-				E0039D471F386A1D00C90BAD /* ZFCameraViewController.m */,
-				E0039D481F386A1D00C90BAD /* ZFPhotoViewController.h */,
-				E0039D491F386A1D00C90BAD /* ZFPhotoViewController.m */,
-				E0039D4A1F386A1D00C90BAD /* ZFPopShowPhotoViewController.h */,
-				E0039D4B1F386A1D00C90BAD /* ZFPopShowPhotoViewController.m */,
-			);
-			path = Controller;
-			sourceTree = "<group>";
-		};
-		E0039D4C1F386A1D00C90BAD /* Tools */ = {
-			isa = PBXGroup;
-			children = (
-				E0039D4D1F386A1D00C90BAD /* ZFPhotoTools.h */,
-				E0039D4E1F386A1D00C90BAD /* ZFPhotoTools.m */,
-			);
-			path = Tools;
-			sourceTree = "<group>";
-		};
-		E0039D4F1F386A1D00C90BAD /* Transtion */ = {
-			isa = PBXGroup;
-			children = (
-				E0039D501F386A1D00C90BAD /* ZFCommonTransition.h */,
-				E0039D511F386A1D00C90BAD /* ZFCommonTransition.m */,
-				E0039D521F386A1D00C90BAD /* ZFPhotoPresentationVC.h */,
-				E0039D531F386A1D00C90BAD /* ZFPhotoPresentationVC.m */,
-			);
-			path = Transtion;
-			sourceTree = "<group>";
-		};
-		E0039D541F386A1D00C90BAD /* View */ = {
-			isa = PBXGroup;
-			children = (
-				E0039D551F386A1D00C90BAD /* ZFBtn.h */,
-				E0039D561F386A1D00C90BAD /* ZFBtn.m */,
-				E0039D571F386A1D00C90BAD /* ZFPhotoCollectionViewCell.h */,
-				E0039D581F386A1D00C90BAD /* ZFPhotoCollectionViewCell.m */,
-				E0039D591F386A1D00C90BAD /* ZFPhotoHeadView.h */,
-				E0039D5A1F386A1D00C90BAD /* ZFPhotoHeadView.m */,
-				E0039D5B1F386A1D00C90BAD /* ZFPhotoTableViewCell.h */,
-				E0039D5C1F386A1D00C90BAD /* ZFPhotoTableViewCell.m */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		E0039D5D1F386A1D00C90BAD /* VIewModel */ = {
-			isa = PBXGroup;
-			children = (
-				E0039D5E1F386A1D00C90BAD /* ZFAlbumModel.h */,
-				E0039D5F1F386A1D00C90BAD /* ZFAlbumModel.m */,
-				E0039D601F386A1D00C90BAD /* ZFPhotoManger.h */,
-				E0039D611F386A1D00C90BAD /* ZFPhotoManger.m */,
-				E0039D621F386A1D00C90BAD /* ZFPhotoModel.h */,
-				E0039D631F386A1D00C90BAD /* ZFPhotoModel.m */,
-			);
-			path = VIewModel;
-			sourceTree = "<group>";
-		};
-		E0039D661F386A1D00C90BAD /* ZFPhotoBrow */ = {
-			isa = PBXGroup;
-			children = (
-				E0039D671F386A1D00C90BAD /* ZFBrowCollectionCell.h */,
-				E0039D681F386A1D00C90BAD /* ZFBrowCollectionCell.m */,
-				E0039D691F386A1D00C90BAD /* ZFBrowsePhotoViewController.h */,
-				E0039D6A1F386A1D00C90BAD /* ZFBrowsePhotoViewController.m */,
-			);
-			path = ZFPhotoBrow;
 			sourceTree = "<group>";
 		};
 		E0039D6C1F386A1D00C90BAD /* RemindView */ = {
@@ -396,6 +308,94 @@
 				E0039D731F386A1D00C90BAD /* ZFSelectView.m */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		E0039D881F386AF800C90BAD /* PhotoSDk */ = {
+			isa = PBXGroup;
+			children = (
+				E0039D891F386AF800C90BAD /* Controller */,
+				E0039D901F386AF800C90BAD /* Tools */,
+				E0039D931F386AF800C90BAD /* Transtion */,
+				E0039D981F386AF800C90BAD /* View */,
+				E0039DA11F386AF800C90BAD /* VIewModel */,
+				E0039DA81F386AF800C90BAD /* ZFAlbumConfig.h */,
+				E0039DA91F386AF800C90BAD /* ZFPhotoAlbum.h */,
+				E0039DAA1F386AF800C90BAD /* ZFPhotoBrow */,
+				E0039DAF1F386AF800C90BAD /* ZFPhotoBundle.bundle */,
+			);
+			path = PhotoSDk;
+			sourceTree = "<group>";
+		};
+		E0039D891F386AF800C90BAD /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				E0039D8A1F386AF800C90BAD /* ZFCameraViewController.h */,
+				E0039D8B1F386AF800C90BAD /* ZFCameraViewController.m */,
+				E0039D8C1F386AF800C90BAD /* ZFPhotoViewController.h */,
+				E0039D8D1F386AF800C90BAD /* ZFPhotoViewController.m */,
+				E0039D8E1F386AF800C90BAD /* ZFPopShowPhotoViewController.h */,
+				E0039D8F1F386AF800C90BAD /* ZFPopShowPhotoViewController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		E0039D901F386AF800C90BAD /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				E0039D911F386AF800C90BAD /* ZFPhotoTools.h */,
+				E0039D921F386AF800C90BAD /* ZFPhotoTools.m */,
+			);
+			path = Tools;
+			sourceTree = "<group>";
+		};
+		E0039D931F386AF800C90BAD /* Transtion */ = {
+			isa = PBXGroup;
+			children = (
+				E0039D941F386AF800C90BAD /* ZFCommonTransition.h */,
+				E0039D951F386AF800C90BAD /* ZFCommonTransition.m */,
+				E0039D961F386AF800C90BAD /* ZFPhotoPresentationVC.h */,
+				E0039D971F386AF800C90BAD /* ZFPhotoPresentationVC.m */,
+			);
+			path = Transtion;
+			sourceTree = "<group>";
+		};
+		E0039D981F386AF800C90BAD /* View */ = {
+			isa = PBXGroup;
+			children = (
+				E0039D991F386AF800C90BAD /* ZFBtn.h */,
+				E0039D9A1F386AF800C90BAD /* ZFBtn.m */,
+				E0039D9B1F386AF800C90BAD /* ZFPhotoCollectionViewCell.h */,
+				E0039D9C1F386AF800C90BAD /* ZFPhotoCollectionViewCell.m */,
+				E0039D9D1F386AF800C90BAD /* ZFPhotoHeadView.h */,
+				E0039D9E1F386AF800C90BAD /* ZFPhotoHeadView.m */,
+				E0039D9F1F386AF800C90BAD /* ZFPhotoTableViewCell.h */,
+				E0039DA01F386AF800C90BAD /* ZFPhotoTableViewCell.m */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		E0039DA11F386AF800C90BAD /* VIewModel */ = {
+			isa = PBXGroup;
+			children = (
+				E0039DA21F386AF800C90BAD /* ZFAlbumModel.h */,
+				E0039DA31F386AF800C90BAD /* ZFAlbumModel.m */,
+				E0039DA41F386AF800C90BAD /* ZFPhotoManger.h */,
+				E0039DA51F386AF800C90BAD /* ZFPhotoManger.m */,
+				E0039DA61F386AF800C90BAD /* ZFPhotoModel.h */,
+				E0039DA71F386AF800C90BAD /* ZFPhotoModel.m */,
+			);
+			path = VIewModel;
+			sourceTree = "<group>";
+		};
+		E0039DAA1F386AF800C90BAD /* ZFPhotoBrow */ = {
+			isa = PBXGroup;
+			children = (
+				E0039DAB1F386AF800C90BAD /* ZFBrowCollectionCell.h */,
+				E0039DAC1F386AF800C90BAD /* ZFBrowCollectionCell.m */,
+				E0039DAD1F386AF800C90BAD /* ZFBrowsePhotoViewController.h */,
+				E0039DAE1F386AF800C90BAD /* ZFBrowsePhotoViewController.m */,
+			);
+			path = ZFPhotoBrow;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -507,7 +507,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0039D841F386A1D00C90BAD /* ZFPhotoBundle.bundle in Resources */,
+				E0039DBF1F386AF800C90BAD /* ZFPhotoBundle.bundle in Resources */,
 				355F28C31EAEDF9F00DC5184 /* LaunchScreen.storyboard in Resources */,
 				355F28C01EAEDF9F00DC5184 /* Assets.xcassets in Resources */,
 				355F28BE1EAEDF9F00DC5184 /* Main.storyboard in Resources */,
@@ -535,38 +535,38 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E0039DBC1F386AF800C90BAD /* ZFPhotoModel.m in Sources */,
+				E0039DB91F386AF800C90BAD /* ZFPhotoTableViewCell.m in Sources */,
 				355F29341EAEE03100DC5184 /* MASViewConstraint.m in Sources */,
+				E0039DB31F386AF800C90BAD /* ZFPhotoTools.m in Sources */,
+				E0039DB11F386AF800C90BAD /* ZFPhotoViewController.m in Sources */,
 				355F29301EAEE03100DC5184 /* MASConstraint.m in Sources */,
-				E0039D791F386A1D00C90BAD /* ZFCommonTransition.m in Sources */,
 				355F28BB1EAEDF9F00DC5184 /* ViewController.m in Sources */,
 				E0039D871F386A1D00C90BAD /* ZFSelectView.m in Sources */,
+				E0039DB61F386AF800C90BAD /* ZFBtn.m in Sources */,
 				355F28B81EAEDF9F00DC5184 /* AppDelegate.m in Sources */,
-				E0039D781F386A1D00C90BAD /* ZFPhotoTools.m in Sources */,
-				E0039D831F386A1D00C90BAD /* ZFBrowsePhotoViewController.m in Sources */,
-				E0039D7E1F386A1D00C90BAD /* ZFPhotoTableViewCell.m in Sources */,
 				E0039D741F386A1D00C90BAD /* ZFPhotoBrowerViewController.m in Sources */,
+				E0039DB81F386AF800C90BAD /* ZFPhotoHeadView.m in Sources */,
+				E0039DBA1F386AF800C90BAD /* ZFAlbumModel.m in Sources */,
 				E0039D851F386A1D00C90BAD /* RemindView.m in Sources */,
-				E0039D7D1F386A1D00C90BAD /* ZFPhotoHeadView.m in Sources */,
+				E0039DBD1F386AF800C90BAD /* ZFBrowCollectionCell.m in Sources */,
+				E0039DB01F386AF800C90BAD /* ZFCameraViewController.m in Sources */,
 				E0039D861F386A1D00C90BAD /* ZFSelectPublishCell.m in Sources */,
+				E0039DB51F386AF800C90BAD /* ZFPhotoPresentationVC.m in Sources */,
+				E0039DB21F386AF800C90BAD /* ZFPopShowPhotoViewController.m in Sources */,
+				E0039DBE1F386AF800C90BAD /* ZFBrowsePhotoViewController.m in Sources */,
+				E0039DB71F386AF800C90BAD /* ZFPhotoCollectionViewCell.m in Sources */,
 				355F29381EAEE03100DC5184 /* ViewController+MASAdditions.m in Sources */,
-				E0039D801F386A1D00C90BAD /* ZFPhotoManger.m in Sources */,
 				355F29371EAEE03100DC5184 /* View+MASAdditions.m in Sources */,
-				E0039D7B1F386A1D00C90BAD /* ZFBtn.m in Sources */,
 				355F29331EAEE03100DC5184 /* MASViewAttribute.m in Sources */,
 				355F292F1EAEE03100DC5184 /* MASCompositeConstraint.m in Sources */,
 				355F29321EAEE03100DC5184 /* MASLayoutConstraint.m in Sources */,
-				E0039D751F386A1D00C90BAD /* ZFCameraViewController.m in Sources */,
-				E0039D7A1F386A1D00C90BAD /* ZFPhotoPresentationVC.m in Sources */,
-				E0039D761F386A1D00C90BAD /* ZFPhotoViewController.m in Sources */,
 				355F29311EAEE03100DC5184 /* MASConstraintMaker.m in Sources */,
 				355F29351EAEE03100DC5184 /* NSArray+MASAdditions.m in Sources */,
 				355F28B51EAEDF9F00DC5184 /* main.m in Sources */,
-				E0039D7F1F386A1D00C90BAD /* ZFAlbumModel.m in Sources */,
 				355F29361EAEE03100DC5184 /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
-				E0039D811F386A1D00C90BAD /* ZFPhotoModel.m in Sources */,
-				E0039D771F386A1D00C90BAD /* ZFPopShowPhotoViewController.m in Sources */,
-				E0039D7C1F386A1D00C90BAD /* ZFPhotoCollectionViewCell.m in Sources */,
-				E0039D821F386A1D00C90BAD /* ZFBrowCollectionCell.m in Sources */,
+				E0039DB41F386AF800C90BAD /* ZFCommonTransition.m in Sources */,
+				E0039DBB1F386AF800C90BAD /* ZFPhotoManger.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
