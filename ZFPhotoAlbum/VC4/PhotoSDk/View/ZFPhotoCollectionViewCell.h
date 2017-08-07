@@ -7,17 +7,26 @@
 //
 
 #import <UIKit/UIKit.h>
-@class PHAsset;
+#import <Photos/Photos.h>
+
+@class ZFPhotoModel;
+@class ZFPhotoCollectionViewCell;
+
+typedef void(^ZFClickItemBlock)(ZFPhotoCollectionViewCell *selectCell,ZFPhotoModel *model,BOOL isSelect);
 
 
 @interface ZFPhotoCollectionViewCell : UICollectionViewCell
 
-//设置数据
--(void)zf_setAssest:(id)data;
+@property(strong,nonatomic)ZFPhotoModel *model;
+@property(copy,nonatomic)NSString *localIdentifier;
+@property(assign,nonatomic)int32_t requestID;
+@property(assign,nonatomic)BOOL isSelected;//这只选中状态
 
-//点击后回调
-@property(copy,nonatomic)void(^btnSelectBlock)(PHAsset *asset,BOOL isSelect);
-//是否被点击
-@property(assign,nonatomic)BOOL isSelect;
+@property (assign, nonatomic) PHImageRequestID liveRequestID;
 
+-(void)startLivePhoto;
+-(void)stopLivePhoto;
+/** 点击cell回调 */
+-(void)zf_setClickItem:(ZFClickItemBlock)clickBlock;
 @end
+

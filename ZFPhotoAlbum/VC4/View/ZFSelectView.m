@@ -10,6 +10,7 @@
 #import "ZFSelectPublishCell.h"
 #import <Photos/Photos.h>
 #import "Masonry.h"
+#import "ZFPhotoModel.h"
 #define kScreenHeight   [UIScreen mainScreen].bounds.size.height
 #define kScreenWidth    [UIScreen mainScreen].bounds.size.width
 
@@ -100,13 +101,13 @@ static void *publishViewContext = &publishViewContext;
         cell.imageView.image = [UIImage imageNamed:@"publish_add"];
     }else {
         cell.cancelButton.hidden = NO;
-        PHAsset *asset = [self.dataSource photosOfPublishView:self][indexPath.row];
+        ZFPhotoModel *model = [self.dataSource photosOfPublishView:self][indexPath.row];
         PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
         // 同步获得图片, 只会返回1张图片
         options.synchronous = YES;
-        CGSize size = CGSizeMake(asset.pixelWidth * 0.06 < 200 ? 200 :asset.pixelWidth * 0.06, asset.pixelHeight * 0.06 <200 ? 200 :asset.pixelHeight * 0.06 );
+        CGSize size = CGSizeMake(model.asset.pixelWidth * 0.06 < 200 ? 200 :model.asset.pixelWidth * 0.06, model.asset.pixelHeight * 0.06 <200 ? 200 :model.asset.pixelHeight * 0.06 );
         __weak ZFSelectPublishCell *weakCell = cell;
-        [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:size contentMode:PHImageContentModeDefault options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+        [[PHImageManager defaultManager] requestImageForAsset:model.asset targetSize:size contentMode:PHImageContentModeDefault options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
             weakCell.imageView.image = result;
         }];
         

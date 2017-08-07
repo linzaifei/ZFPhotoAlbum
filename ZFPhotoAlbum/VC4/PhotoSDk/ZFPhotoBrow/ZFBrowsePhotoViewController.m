@@ -10,7 +10,6 @@
 #import "ZFPhotoAlbum.h"
 #import "ZFBrowCollectionCell.h"
 #import "ZFPhotoHeadView.h"
-#import "ZFNSNotificationModel.h"
 #import "ZFCommonTransition.h"
 #define  MIN_Space 20
 @interface ZFBrowsePhotoViewController ()<UICollectionViewDelegateFlowLayout,UICollectionViewDataSource>
@@ -37,7 +36,7 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     [self setUI];
-    [self.notificationModel addObserver:self forKeyPath:@"seletedPhotos" options:NSKeyValueObservingOptionNew context:nil];
+//    [self.notificationModel addObserver:self forKeyPath:@"seletedPhotos" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 -(void)setUI{
@@ -45,7 +44,7 @@
     _browHeadViewBar = [[ZFBrowHeadViewBar alloc] initWithFrame:CGRectMake(0, 0, kScreenWidth, kNavigationHeight)];
 //    _browHeadViewBar.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:_browHeadViewBar];
-    _browHeadViewBar.count = self.notificationModel.seletedPhotos.count;
+//    _browHeadViewBar.count = self.notificationModel.seletedPhotos.count;
     ScrollLayout *layout = [[ScrollLayout alloc] init];
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     layout.minimumLineSpacing = MIN_Space;
@@ -110,16 +109,16 @@
         NSString *urlKey = asset.localIdentifier;
         if ([ws.selectedAssetsDic valueForKey:urlKey]) {
             weakCell.isSelect = NO;
-            [[ws.notificationModel mutableArrayValueForKeyPath:@"seletedPhotos"] removeObject:ws.selectedAssetsDic[urlKey]];
+//            [[ws.notificationModel mutableArrayValueForKeyPath:@"seletedPhotos"] removeObject:ws.selectedAssetsDic[urlKey]];
             [ws.selectedAssetsDic removeObjectForKey:urlKey];
         }else {
-            if (ws.notificationModel.seletedPhotos.count >= ws.maxCount) {
-                [RemindView showViewWithTitle:[NSString stringWithFormat:@"%@%lu", NSLocalizedString(@"最多选择", nil), (unsigned long)ws.maxCount] location:LocationTypeMIDDLE];
-                return;
-            }
-            weakCell.isSelect = YES;
-            [ws.selectedAssetsDic setObject:asset forKey:urlKey];
-            [[ws.notificationModel mutableArrayValueForKey:@"seletedPhotos"] addObject:asset];
+//            if (ws.notificationModel.seletedPhotos.count >= ws.maxCount) {
+//                [RemindView showViewWithTitle:[NSString stringWithFormat:@"%@%lu", NSLocalizedString(@"最多选择", nil), (unsigned long)ws.maxCount] location:LocationTypeMIDDLE];
+//                return;
+//            }
+//            weakCell.isSelect = YES;
+//            [ws.selectedAssetsDic setObject:asset forKey:urlKey];
+//            [[ws.notificationModel mutableArrayValueForKey:@"seletedPhotos"] addObject:asset];
         }
     };
     return cell;
@@ -149,7 +148,7 @@
 
 -(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
     if ([keyPath isEqualToString:@"seletedPhotos"]) {
-        _browHeadViewBar.count = self.notificationModel.seletedPhotos.count;
+//        _browHeadViewBar.count = self.notificationModel.seletedPhotos.count;
     }
 }
 
@@ -168,7 +167,7 @@
 
 -(void)dealloc{
     NSLog(@"销毁%s",__FUNCTION__);
-    [self.notificationModel removeObserver:self forKeyPath:@"seletedPhotos"];
+//    [self.notificationModel removeObserver:self forKeyPath:@"seletedPhotos"];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

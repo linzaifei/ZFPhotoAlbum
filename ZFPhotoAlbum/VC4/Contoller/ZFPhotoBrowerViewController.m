@@ -10,12 +10,13 @@
 #import "ZFPhotoViewController.h"
 #import "ZFSelectView.h"
 #import "Masonry.h"
-
-#import "ZFPickerPhotoViewController.h"
-
-@interface ZFPhotoBrowerViewController ()<ZFPublishViewDataSource,ZFPublishViewDelegate,ZFPhotoPickerViewControllerDelegate>
+#import "ZFPhotoManger.h"
+#import "ZFPhotoViewController.h"
+#import "ZFCameraViewController.h"
+@interface ZFPhotoBrowerViewController ()<ZFPublishViewDataSource,ZFPublishViewDelegate,ZFPhotoPickerViewControllerDelegate,ZFCameraViewDelegate>
 @property(strong,nonatomic)NSMutableArray *dataArr;
 @property(strong,nonatomic)ZFSelectView *selectView;
+@property(strong,nonatomic)ZFPhotoManger *photoManager;
 @end
 
 @implementation ZFPhotoBrowerViewController
@@ -53,10 +54,39 @@
 }
 //点击添加照片
 -(void)publishViewClickAddPhoto:(ZFSelectView *)publishView{
-    ZFPickerPhotoViewController *photoViewController = [[ZFPickerPhotoViewController alloc] init];
-    photoViewController.pickerDelegate = self;
-    photoViewController.selectItems = self.dataArr;
-    [self presentViewController:photoViewController animated:YES completion:NULL];
+  
+    
+    __weak  ZFPhotoBrowerViewController *ws = self;
+    UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:@"类型" message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *camera = [UIAlertAction actionWithTitle:@"相机" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        
+        ZFCameraViewController *photoBrowerViewController = [[ZFCameraViewController alloc] initWithCameraType:ZFCameraPopTypeSystom];
+        photoBrowerViewController.cameraDelegate = self;
+        [ws presentViewController:photoBrowerViewController animated:YES completion:NULL];
+    }];
+    
+    UIAlertAction *album = [UIAlertAction actionWithTitle:@"相册" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        ZFPhotoViewController *photoViewController = [[ZFPhotoViewController alloc] init];
+        photoViewController.delegate = self;
+        self.photoManager.selectedPhotos = self.dataArr;
+        photoViewController.photoManager = self.photoManager;
+        
+        [self presentViewController:[[UINavigationController alloc] initWithRootViewController:photoViewController] animated:YES completion:NULL];
+    }];
+    
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    
+    [alertVC addAction:camera];
+    [alertVC addAction:album];
+    [alertVC addAction:cancel];
+    
+    [self presentViewController:alertVC animated:YES completion:NULL];
+    
+    
+    
 }
 //点击了item
 -(void)publishView:(ZFSelectView *)publishView didClickPhotoViewAtIndex:(NSUInteger)index{
@@ -65,7 +95,7 @@
     
 }
 
--(NSArray<PHAsset *> *)photosOfPublishView:(ZFSelectView *)publishView{
+-(NSArray<ZFPhotoModel *> *)photosOfPublishView:(ZFSelectView *)publishView{
     return self.dataArr;
 }
 
@@ -76,16 +106,33 @@
     
     
 }
-- (void)photoPickerViewController:(ZFPhotoViewController *)pickerViewController didSelectPhotos:(NSArray<PHAsset *> *)photos{
+- (void)photoPickerViewController:(ZFPhotoViewController *)pickerViewController didSelectPhotos:(NSMutableArray<ZFPhotoModel *> *)photos{
     self.dataArr = [NSMutableArray arrayWithArray:photos];
     [self.selectView reloadData];
 }
+-(void)zf_photoCapViewController:(UIViewController *)viewController didFinishDismissWithPhoto:(ZFPhotoModel *)model{
+    
+    if (self.dataArr) {
+        [self.dataArr addObject:model];
+        [self.selectView reloadData];
+    }
+}
+#pragma mark - 懒加载
 -(NSMutableArray *)dataArr{
     if (_dataArr == nil) {
         _dataArr = [NSMutableArray array];
     }
     return _dataArr;
 }
+-(ZFPhotoManger *)photoManager{
+    if (_photoManager == nil) {
+        _photoManager = [[ZFPhotoManger alloc] initPhotoMangerWithSelectType:ZFPhotoMangerSelectTypePhoto];
+
+    }
+    return _photoManager;
+}
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

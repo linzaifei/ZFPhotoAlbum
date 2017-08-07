@@ -8,6 +8,8 @@
 
 #import "ZFPhotoTableViewCell.h"
 #import <Photos/Photos.h>
+#import "ZFAlbumModel.h"
+#import "ZFPhotoTools.h"
 @interface ZFPhotoTableViewCell()
 @property(strong,nonatomic)UIImageView *photoImageView;
 @property(strong,nonatomic)UILabel *titleLabel;
@@ -55,18 +57,15 @@
 }
 
 
--(void)setAssetCollection:(PHAssetCollection *)assetCollection{
-    _assetCollection = assetCollection;
-    self.titleLabel.text = assetCollection.localizedTitle;
-    PHFetchResult<PHAsset *> * assets = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
-    PHAsset *ass = assets.firstObject;
-    PHImageRequestOptions *optin = [[PHImageRequestOptions alloc] init];
-    self.detailLabel.text = [NSString stringWithFormat:@"%ld",assets.count];
-    
+-(void)setModel:(ZFAlbumModel *)model{
+    _model = model;
+    self.titleLabel.text = model.albumName;
+    self.detailLabel.text = [NSString stringWithFormat:@"%ld",model.count];
     __weak ZFPhotoTableViewCell *ws = self;
-    [[PHImageManager defaultManager] requestImageForAsset:ass targetSize:CGSizeZero contentMode:PHImageContentModeDefault options:optin resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-        ws.photoImageView.image = result;
+    [ZFPhotoTools zf_getPhotoFromPHAsset:model.asset size:CGSizeMake(60, 60)  completion:^(UIImage *image, NSDictionary *info) {
+        ws.photoImageView.image = image;
     }];
+    
 }
 
 - (void)awakeFromNib {

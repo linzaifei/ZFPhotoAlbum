@@ -60,8 +60,8 @@
 }
 -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
     ZFPhotoTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:NSStringFromClass([ZFPhotoTableViewCell class])];
-    PHAssetCollection *assetCollection = self.dataArr[indexPath.row];
-    cell.assetCollection = assetCollection;
+    
+    cell.model = self.dataArr[indexPath.row];;
     
     return cell;
 }
@@ -86,12 +86,12 @@
 }
 - (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
     
-    self.commonTransition.type = TransitionTypePresent;
+    self.commonTransition.type = ZFTransitionTypePopMenuPresent;
     return self.commonTransition;
 }
 
 - (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed{
-    self.commonTransition.type = TransitionTypeDismess;
+    self.commonTransition.type = ZFTransitionTypePopMenuDismess;
     return self.commonTransition;
 }
 

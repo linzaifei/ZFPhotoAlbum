@@ -10,7 +10,7 @@
 @class PHAsset;
 @protocol ZFPublishViewDelegate;
 @protocol ZFPublishViewDataSource;
-
+@class ZFPhotoModel;
 @interface ZFSelectView : UIView
 
 /*!
@@ -37,6 +37,6 @@
 
 @protocol ZFPublishViewDataSource <NSObject>
 
--(NSArray<PHAsset *> *)photosOfPublishView:(ZFSelectView *)publishView;
+-(NSArray<ZFPhotoModel *> *)photosOfPublishView:(ZFSelectView *)publishView;
 
 @end

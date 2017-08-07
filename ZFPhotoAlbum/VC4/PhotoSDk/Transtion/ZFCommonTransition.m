@@ -23,29 +23,91 @@
 - (void)animateTransition:(id <UIViewControllerContextTransitioning>)transitionContext{
     
     switch (self.type) {
-        case TransitionTypePush:
+        case ZFTransitionTypePush:
             [self zf_pushAnnimationTransition:transitionContext];
             break;
-        case TransitionTypePop:
+        case ZFTransitionTypePop:
             [self zf_popAnnimationTransition:transitionContext];
             break;
-        case TransitionTypePresent:
+        case ZFTransitionTypePopMenuPresent:
             [self zf_PresentAnimationTransition:transitionContext];
             break;
-        case TransitionTypeDismess:
+        case ZFTransitionTypePopMenuDismess:
             [self zf_DismessAnimationTransition:transitionContext];
             break;
+        case ZFTransitionTypeCameraPresent:
+            [self zf_CameraPresentAnimationTransition:transitionContext];
+            break;
+        case ZFTransitionTypeCameraDismess:
+            [self zf_CameraDisMessAnimationTransition:transitionContext];
+            break;
+            
+            
         default:
             break;
     }
 }
+/** 相机present动画 */
+-(void)zf_CameraPresentAnimationTransition:(id <UIViewControllerContextTransitioning>)transitionContext{
 
+    //
+    UIViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    
+    UIViewController *fromVC = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    
+//    NSLog(@"toVC == %@",toVC);
+//    NSLog(@"fromVC == %@",fromVC);
+    //截图
+    UIView *naviView = [fromVC.view snapshotViewAfterScreenUpdates:YES];
+    naviView.frame = fromVC.view.frame;
+    fromVC.view.hidden = YES;
+    //自定义动画后要重新加入容器中
+    [transitionContext.containerView addSubview:toVC.view];
+    [transitionContext.containerView addSubview:naviView];
+    
+    //初始相机的frame
+    CGFloat width = [UIScreen mainScreen].bounds.size.width;
+    CGFloat height = [UIScreen mainScreen].bounds.size.height;
+    toVC.view.frame = CGRectMake(0, -height, width, height);
+    
+    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+        naviView.frame = CGRectMake(0, height, width, height);
+        toVC.view.frame = CGRectMake(0, 0, width, height);
 
-/**
- present动画
+    } completion:^(BOOL finished) {
+        [naviView removeFromSuperview];
+        fromVC.view.hidden = NO;
+        [transitionContext completeTransition:YES];
+    }];
+    
 
- @param transitionContext <#transitionContext description#>
- */
+}
+
+/** 相机DisMess动画 */
+-(void)zf_CameraDisMessAnimationTransition:(id <UIViewControllerContextTransitioning>)transitionContext{
+    UIViewController *fromVC = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    UIViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    
+    
+    UIView *naviView = [toVC.view snapshotViewAfterScreenUpdates:NO];
+    CGFloat width = [UIScreen mainScreen].bounds.size.width;
+    CGFloat height = [UIScreen mainScreen].bounds.size.height;
+    naviView.frame = CGRectMake(0, height, width, height);
+    [transitionContext.containerView addSubview:naviView];
+    toVC.view.hidden = YES;
+    //动画吧
+    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+        fromVC.view.frame = CGRectMake(0, -height, width, height);
+        naviView.frame = CGRectMake(0, 0, width, height);
+    } completion:^(BOOL finished) {
+        [naviView removeFromSuperview];
+        toVC.view.hidden = NO;
+        [transitionContext completeTransition:YES];
+    }];
+
+}
+
+/** 菜单栏present动画 */
 -(void)zf_PresentAnimationTransition:(id <UIViewControllerContextTransitioning>)transitionContext{
     UIView *toView = [transitionContext viewForKey:UITransitionContextToViewKey];
     [transitionContext.containerView addSubview:toView];
@@ -63,11 +125,7 @@
 }
 
 
-/**
- dismess动画
- 
- @param transitionContext <#transitionContext description#>
- */
+/** 菜单栏dismess动画 */
 -(void)zf_DismessAnimationTransition:(id <UIViewControllerContextTransitioning>)transitionContext{
     UIView *fromView = [transitionContext viewForKey:UITransitionContextFromViewKey];
     // 添加一个动画，让要消失的 view 向下移动，离开屏幕
@@ -82,11 +140,7 @@
 }
 
 
-/**
- push动画
- 
- @param transitionContext <#transitionContext description#>
- */
+/** push动画 */
 -(void)zf_pushAnnimationTransition:(id <UIViewControllerContextTransitioning>)transitionContext{
     ZFBrowsePhotoViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     ZFPhotoViewController *fromVC = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];

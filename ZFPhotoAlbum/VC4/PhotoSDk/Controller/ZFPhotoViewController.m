@@ -11,22 +11,23 @@
 #import "ZFPhotoCollectionViewCell.h"
 #import "RemindView.h"
 #import "ZFPopShowPhotoViewController.h"
-#import "ZFNSNotificationModel.h"
-#import "ZFBrowsePhotoViewController.h"
-#import "ZFCamareViewController.h"
+#import "ZFCameraViewController.h"
 #import "ZFPhotoAlbum.h"
 #import "ZFPhotoPresentationVC.h"
-@interface ZFPhotoViewController ()<UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UINavigationControllerDelegate, UIImagePickerControllerDelegate,PHPhotoLibraryChangeObserver,UIViewControllerPreviewingDelegate>
+#import "ZFPhotoModel.h"
+#import "ZFAlbumModel.h"
+
+//http://blog.csdn.net/jeffasd/article/details/50465244
+@interface ZFPhotoViewController ()<UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UINavigationControllerDelegate, UIImagePickerControllerDelegate,ZFCameraViewDelegate,PHPhotoLibraryChangeObserver>
 @property(strong,nonatomic)UICollectionView *collectionView;
-@property(strong,nonatomic)NSMutableArray *dataArr;
-@property(strong,nonatomic)NSMutableDictionary *selectedAssetsDic;//选择assest
-@property(strong,nonatomic)ZFCamareViewController *camareViewController;
+@property(strong,nonatomic)ZFCameraViewController *camareViewController;
 @property(strong,nonatomic)ZFPhotoHeadView *photoHeadView;
-@property(strong,nonatomic)ZFNSNotificationModel *notificationModel;//监听数组
-@property(strong,nonatomic)UIView *contentView;
-//存储所有照片
-@property (nonatomic, strong) NSMutableArray <PHFetchResult *>*sectionResults;
-@property (nonatomic, strong) NSMutableArray *sectionCollectResults;
+
+
+@property(strong,nonatomic)NSArray *albums;//相册数据
+@property(strong,nonatomic)NSMutableArray *allObjs;//所有照片数据
+@property(strong,nonatomic)NSArray *photos;//照片数据
+@property(strong,nonatomic)NSArray *videoPhotos;//视频数据
 
 @end
 
@@ -34,22 +35,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self zf_addChildrenView];
+    [self loadData];
     [self zf_setUI];
-    [self zf_permission];
-    [self.notificationModel addObserver:self forKeyPath:@"seletedPhotos" options:NSKeyValueObservingOptionNew context:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(zf_closeNotifer) name:ZFPopDismessNotfcation object:nil];
-    
-}
--(instancetype)init{
-    if (self = [super init]) {
-        self.columnCount = 3;
-        self.columnSpacing = 1;
-        self.rowSpacing = 1;
-        self.sectionInset = UIEdgeInsetsMake(5, 5, 5, 5);
-        self.maxCount = 9;
-    }
-    return self;
+
+    [self.photoManager addObserver:self forKeyPath:@"selectedPhotos" options:NSKeyValueObservingOptionNew context:nil];
+    [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -57,34 +47,40 @@
      [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
--(void)zf_addChildrenView{
-    _camareViewController = [[ZFCamareViewController alloc] init];
-    _camareViewController.view.frame = CGRectMake(0, -kScreenHeight, kScreenWidth,kScreenHeight);
-    [self addChildViewController:_camareViewController];
-    [self.view addSubview:self.contentView];
+#pragma mark - 加载数据
+-(void)loadData{
     __weak ZFPhotoViewController *ws = self;
-    _camareViewController.backBlock = ^{
-        [ws zf_backToFirstPageAnimation];
-    };
-}
 
+    [self.photoManager zf_getAlbumList:^(NSArray *albums) {
+        ws.albums = albums;
+        ZFAlbumModel *model = albums.firstObject;
+        
+        [ws.photoManager zf_getPhotoForPHFetchResult:model.result WithIsAddCamera:YES PhotosList:^(NSArray *photos, NSArray *videos, NSArray *allObjs) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                ws.photoHeadView.title = model.albumName;
+                ws.allObjs = [allObjs mutableCopy];
+                ws.photos = photos;
+                ws.videoPhotos = videos;
+                [ws.collectionView reloadData];
+            });
+        }];
+    }];
+}
+#pragma mark - 设置UI
 -(void)zf_setUI{
-    if(self.columnCount > 5 || self.columnCount < 3){
-        self.columnCount = 3;
+    if(self.photoManager.columnCount > 5 || self.photoManager.columnCount < 3){
+        self.photoManager.columnCount = 3;
     }
-    
-    [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
     self.photoHeadView = [ZFPhotoHeadView new];
     self.photoHeadView.barTintColor = [UIColor whiteColor];
     self.photoHeadView.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addSubview:self.photoHeadView];
-    self.photoHeadView.count = self.notificationModel.seletedPhotos.count;
-    
+    [self.view addSubview:self.photoHeadView];
+    self.photoHeadView.count = self.photoManager.selectedPhotos.count;
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
-    layout.minimumLineSpacing = self.rowSpacing;
-    layout.minimumInteritemSpacing = self.columnSpacing;
-    layout.sectionInset = self.sectionInset;
-    CGFloat itemWidth = (kScreenWidth - self.rowSpacing * (self.columnCount - 1) - self.sectionInset.left - self.sectionInset.right) / self.columnCount;
+    layout.minimumLineSpacing = self.photoManager.rowSpacing;
+    layout.minimumInteritemSpacing = self.photoManager.columnSpacing;
+    layout.sectionInset = self.photoManager.sectionInset;
+    CGFloat itemWidth = (kScreenWidth - self.photoManager.rowSpacing * (self.photoManager.columnCount - 1) - self.photoManager.sectionInset.left - self.photoManager.sectionInset.right) / self.photoManager.columnCount;
     layout.itemSize = CGSizeMake(itemWidth, itemWidth);
     
     self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
@@ -92,11 +88,12 @@
     self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.delegate = self;
     self.collectionView.dataSource = self;
-    [self.contentView addSubview:self.collectionView];
+    [self.view addSubview:self.collectionView];
     [self.collectionView registerClass:[ZFPhotoCollectionViewCell class] forCellWithReuseIdentifier:NSStringFromClass([ZFPhotoCollectionViewCell class])];
     
     //用于3Dtouch
-    [self registerForPreviewingWithDelegate:self sourceView:self.collectionView];
+   // [self registerForPreviewingWithDelegate:self sourceView:self.collectionView];
+    
     
     //////------block --------
     __weak ZFPhotoViewController *ws = self;
@@ -107,8 +104,12 @@
     };
     //点击下一步
     self.photoHeadView.chooseBlock = ^(){
-        if ([ws.delegate respondsToSelector:@selector(photoPickerViewController:didSelectPhotos:)]) {
-            [ws.delegate photoPickerViewController:ws didSelectPhotos:[ws.notificationModel.seletedPhotos copy]];
+        if (ws.didSelectPhotosBlock) {
+            ws.didSelectPhotosBlock(ws.photoManager.selectedPhotos);
+        }else{
+            if ([ws.delegate respondsToSelector:@selector(photoPickerViewController:didSelectPhotos:)]) {
+                [ws.delegate photoPickerViewController:ws didSelectPhotos:ws.photoManager.selectedPhotos];
+            }
         }
         [ws dismissViewControllerAnimated:YES completion:NULL];
     };
@@ -119,384 +120,211 @@
     };
     
     ///-------布局
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_photoHeadView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_photoHeadView)]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_collectionView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_collectionView)]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[_photoHeadView(==64)]-0-[_collectionView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_photoHeadView,_collectionView)]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_photoHeadView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_photoHeadView)]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_collectionView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_collectionView)]];
+    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[_photoHeadView(==64)]-0-[_collectionView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_photoHeadView,_collectionView)]];
 }
 
+#pragma mark - 点击标题
 //下拉选择
 -(void)zf_showPhotoViewController{
     ZFPopShowPhotoViewController *showViewController = [[ZFPopShowPhotoViewController alloc] init];
-
-    showViewController.dataArr = self.sectionCollectResults;
+    showViewController.dataArr = self.albums;
     __weak ZFPhotoViewController *ws = self;
     showViewController.didSelectBlock = ^(NSArray *dataArr, NSInteger index) {
-        [ws zf_getFirstData:ws.sectionResults[index] WithAdd:NO];
-        if (index == 0) { //这个地方还需要优化 默认第一个就是相机相册的！
-            [ws zf_addCamareImage];
+        ZFAlbumModel *model = dataArr[index];
+        ws.photoHeadView.title = model.albumName;
+        BOOL isAdd = NO;
+        if (index == 0) {
+            isAdd = YES;
         }
-        [ws.collectionView reloadData];
-        NSIndexPath *path = [NSIndexPath indexPathForItem:0 inSection:0];
-        [ws.collectionView scrollToItemAtIndexPath:path atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
+        [ws.photoManager zf_getPhotoForPHFetchResult:model.result WithIsAddCamera:isAdd PhotosList:^(NSArray *photos, NSArray *videos, NSArray *allObjs) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                ws.allObjs = [allObjs mutableCopy];
+                ws.photos = photos;
+                ws.videoPhotos = videos;
+                [ws.collectionView reloadData];
+                [ws.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
+            });
+        }];
     };
     [self presentViewController:showViewController animated:YES completion:NULL];
 }
 
--(void)zf_loadData{
-//    dispatch_group_t group = dispatch_group_create();
-//    dispatch_group_enter(group);
-    // 获得相机胶卷
-    PHAssetCollection *Libararys = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeSmartAlbum subtype:PHAssetCollectionSubtypeSmartAlbumUserLibrary options:nil].lastObject;
-    // 遍历相机胶卷,获取大图
-    [self zf_enumerateAssetsInAssetCollection:Libararys original:YES];
-    
-    PHFetchResult<PHAssetCollection *> *assetAlbums = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAny options:nil];
-    
-    // 遍历所有的自定义相簿
-    __weak ZFPhotoViewController *ws = self;
-    [assetAlbums enumerateObjectsUsingBlock:^(PHAssetCollection * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        [ws zf_enumerateAssetsInAssetCollection:obj original:YES];
-    }];
-
-//    dispatch_group_leave(group);
-//    dispatch_group_notify(group, dispatch_get_main_queue(), ^{
-        [ws zf_getFirstData:[ws.sectionResults firstObject] WithAdd:NO];
-        [ws zf_addCamareImage];
-        [ws.collectionView reloadData];
-//    });
-}
-
--(void)zf_getFirstData:(PHFetchResult *)assets WithAdd:(BOOL)isadd {
-    UIApplication *application = [UIApplication sharedApplication];
-    [self.dataArr removeAllObjects];
-    __weak ZFPhotoViewController *ws = self;
-    [assets enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (isadd && idx == assets.count - 1) {
-            if (application.applicationState == UIApplicationStateActive) {
-                [ws.selectedAssetsDic setValue:obj forKey:obj.localIdentifier];
-            }
-        }
-        [ws.dataArr addObject:obj];
-    }];
-   
-    
-    [[ws.notificationModel mutableArrayValueForKey:@"seletedPhotos"] removeAllObjects];
-    [[ws.notificationModel mutableArrayValueForKey:@"seletedPhotos"] addObjectsFromArray:self.selectedAssetsDic.allValues];
-    
-}
-
--(void)zf_addCamareImage{
-    UIImage *cameraImage = [UIImage imageNamed:[@"ZFPhotoBundle.bundle" stringByAppendingPathComponent:@"AssetsCamera.png"]];
-    [cameraImage resizableImageWithCapInsets:UIEdgeInsetsMake(1, 1, 1, 1)];
-    [self.dataArr addObject:cameraImage];
-}
-
-
-/**
- 遍历所有照片
- 
- @param assetCollection 相簿
- @param original 是不是原始图片
- */
-
-- (void)zf_enumerateAssetsInAssetCollection:(PHAssetCollection *)assetCollection original:(BOOL)original{
-    //相簿名
-    NSLog(@"title = %@",assetCollection.localizedTitle);
-    [self.sectionCollectResults addObject:assetCollection];
-    // 获得某个相簿中的所有PHAsset对象
-    PHFetchResult<PHAsset *> * assets = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
-    [self.sectionResults addObject:assets];
-    
-    /*
-     synchronous：指定请求是否同步执行。
-     resizeMode：对请求的图像怎样缩放。有三种选择：None，不缩放；Fast，尽快地提供接近或稍微大于要求的尺寸；Exact，精准提供要求的尺寸。
-     deliveryMode：图像质量。有三种值：Opportunistic，在速度与质量中均衡；HighQualityFormat，不管花费多长时间，提供高质量图像；FastFormat，以最快速度提供好的质量。
-     这个属性只有在 synchronous 为 true 时有效。
-     normalizedCropRect：用于对原始尺寸的图像进行裁剪，基于比例坐标。只在 resizeMode 为 Exact 时有效。
-     */
-}
-
+#pragma mark - CollectionViewDataSource
 -(NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return self.dataArr.count;
+    return self.allObjs.count;
 }
 
 -(__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     ZFPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([ZFPhotoCollectionViewCell class]) forIndexPath:indexPath];
-    NSInteger index = self.dataArr.count - indexPath.item - 1;
-    id data = self.dataArr[index];
-    [cell zf_setAssest:data];
-    
-    BOOL isSelected = NO;
-    if ([data isKindOfClass:[PHAsset class]]) {
-        PHAsset *asset = (PHAsset *)data;
-        if ([self.selectedAssetsDic valueForKey:asset.localIdentifier]) {
-            isSelected = YES;
-        }
-    }
-    cell.isSelect = isSelected;
+    cell.model = self.allObjs[indexPath.item];
     __weak ZFPhotoViewController *ws = self;
-    __weak ZFPhotoCollectionViewCell *weakCell = cell;
-    cell.btnSelectBlock = ^(PHAsset *asset, BOOL isSelect) {
-        NSString *urlKey = asset.localIdentifier;
-        if ([ws.selectedAssetsDic valueForKey:urlKey]) {
-            weakCell.isSelect = NO;
-            [[ws.notificationModel mutableArrayValueForKeyPath:@"seletedPhotos"] removeObject:ws.selectedAssetsDic[urlKey]];
-            [ws.selectedAssetsDic removeObjectForKey:urlKey];
-        }else {
-            if (ws.notificationModel.seletedPhotos.count >= ws.maxCount) {
-                [RemindView showViewWithTitle:[NSString stringWithFormat:@"%@%lu", NSLocalizedString(@"最多选择", nil), (unsigned long)ws.maxCount] location:LocationTypeMIDDLE];
-                return;
-            }
-            weakCell.isSelect = YES;
-            [ws.selectedAssetsDic setObject:asset forKey:urlKey];
-            [[ws.notificationModel mutableArrayValueForKey:@"seletedPhotos"] addObject:asset];
-        }
-
-    };
+    
+    [cell zf_setClickItem:^(ZFPhotoCollectionViewCell *selectCell,ZFPhotoModel *model, BOOL isSelect) {
+        [ws didClickSelectCell:selectCell Model:model IsSelect:isSelect];
+    }];
     return cell;
 }
-
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    //cell消失取消加载
+    ZFPhotoCollectionViewCell *zfCell = (ZFPhotoCollectionViewCell *)cell;
+    if (zfCell.requestID) {
+        [[PHImageManager defaultManager] cancelImageRequest:zfCell.requestID];
+    }
+}
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    NSInteger index = self.dataArr.count - indexPath.item - 1;
-    id data = self.dataArr[index];
-    if ([data isKindOfClass:[UIImage class]]) {
-        [self zf_goToDetailAnimation];        
-    }else{        
-//        PHAsset *asset = (PHAsset *)data;
-        ZFBrowsePhotoViewController *browsePhotoViewController = [self zfPushDataWithIndexPath:indexPath];
-        [self.navigationController pushViewController:browsePhotoViewController animated:YES];
-    }
-}
-
-- (nullable UIViewController *)previewingContext:(id <UIViewControllerPreviewing>)previewingContext viewControllerForLocation:(CGPoint)location NS_AVAILABLE_IOS(9_0){
-    
-    UICollectionView *collectionView = (UICollectionView *)[previewingContext sourceView];
-    NSIndexPath *indexPath = [collectionView indexPathForItemAtPoint:location];
-    
-    ZFBrowsePhotoViewController *browsePhotoViewController = [self zfPushDataWithIndexPath:indexPath];
-    browsePhotoViewController.view.frame = self.view.frame;
-
-    return browsePhotoViewController;
-}
-
-- (void)previewingContext:(id <UIViewControllerPreviewing>)previewingContext commitViewController:(UIViewController *)viewControllerToCommit NS_AVAILABLE_IOS(9_0){
-    
-    viewControllerToCommit.hidesBottomBarWhenPushed = YES;
-    
-    [self showViewController:viewControllerToCommit sender:self];
-    
-}
-
--(ZFBrowsePhotoViewController *)zfPushDataWithIndexPath:(NSIndexPath *)indexPath{
-    
-    ZFBrowsePhotoViewController *browsePhotoViewController = [[ZFBrowsePhotoViewController alloc] init];
-    browsePhotoViewController.photoItems = self.dataArr;
-    browsePhotoViewController.currentIndex = indexPath.item;
-    browsePhotoViewController.selectedAssetsDic = self.selectedAssetsDic;
-    browsePhotoViewController.notificationModel = self.notificationModel;
-    browsePhotoViewController.maxCount = self.maxCount;
-//    browsePhotoViewController.sourceView = view;
-    self.navigationController.delegate = browsePhotoViewController;
-    __weak ZFPhotoViewController *ws = self;
-    browsePhotoViewController.cancelBrowBlock = ^(NSIndexPath *lastIndexPath) {
-        [ws.collectionView reloadData];
-        if (lastIndexPath.item > indexPath.item) {
-            [ws.collectionView scrollToItemAtIndexPath:lastIndexPath atScrollPosition:UICollectionViewScrollPositionBottom animated:NO];
-        }else{
-            [ws.collectionView scrollToItemAtIndexPath:lastIndexPath atScrollPosition:UICollectionViewScrollPositionTop animated:NO];
-        }
-    };
-    return browsePhotoViewController;
-}
-
-
-///外部传入 是否选中状态
--(void)setSelectItems:(NSArray<PHAsset *> *)selectItems{
-    for (PHAsset *asset in selectItems) {
-        if (asset) {
-            [self.selectedAssetsDic setValue:asset forKey:asset.localIdentifier];
-        }
-        [[self.notificationModel mutableArrayValueForKey:@"seletedPhotos"] addObject:asset];
-    }
-    
-}
-
-
-#pragma mark - 添加插入移动删除图片事 调用
-// This callback is invoked on an arbitrary serial queue. If you need this to be handled on a specific queue, you should redispatch appropriately
-- (void)photoLibraryDidChange:(PHChange *)changeInstance{
-    // Photos may call this method on a background queue;
-    // switch to the main queue to update the UI.
-    //深拷贝，备份比较
-    NSMutableArray *updatedSectionFetchResults = [self.sectionResults mutableCopy];
-    __block BOOL reloadRequired = NO;
-    __weak ZFPhotoViewController *ws = self;
-    dispatch_async(dispatch_get_main_queue(), ^{
-//        PHFetchResult *rootCollectionsFetchResult = [PHCollection fetchTopLevelUserCollectionsWithOptions:nil];
-        [ws.sectionResults enumerateObjectsUsingBlock:^(PHFetchResult * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSLog(@"----%ld",obj.count);
+    ZFPhotoModel *model = self.allObjs[indexPath.item];
+    switch (model.type) {
+        case ZFPhotoModelMediaTypeCamera://跳转相机
+            [self goCameraViewController];
+            break;
+        case ZFPhotoModelMediaTypePhoto://照片,live照片
+        case ZFPhotoModelMediaTypeLivePhoto:
+            NSLog(@"点击照片");
             
-            //根据原先的相片集的数据创建变化对象
-            PHFetchResultChangeDetails *changeDetails = [changeInstance changeDetailsForFetchResult:obj];
-             //判断变化对象是否为空，不为空则代表有相册有变化
-            if(changeDetails != nil){
-//                NSLog(@"%@",changeDetails.fetchResultAfterChanges);
-//                NSLog(@"---------");
-                //变化后的数据替换变化前的数据
-                [updatedSectionFetchResults replaceObjectAtIndex:idx withObject:[changeDetails fetchResultAfterChanges]];
-                reloadRequired = YES;
+            break;
+        case ZFPhotoModelMediaTypeVideo://视屏
+            NSLog(@"视频");
+            break;
+            
+        default:
+            break;
+    }
+    
+
+
+}
+- (void)goCameraViewController {
+    if(![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+        [RemindView showViewWithTitle:NSLocalizedString(@"此设备不支持相机!", nil) location:LocationTypeMIDDLE];
+        return;
+    }
+    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    if (authStatus == AVAuthorizationStatusRestricted || authStatus == AVAuthorizationStatusDenied) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"无法使用相机" message:@"请在设置-隐私-相机中允许访问相机" delegate:self cancelButtonTitle:@"取消" otherButtonTitles:@"设置", nil];
+        [alert show];
+        return;
+    }
+    ZFCameraType type = 0;
+    if (self.photoManager.type == ZFPhotoMangerSelectTypePhotoAndVideo) {
+        
+    }else if (self.photoManager.type == ZFPhotoModelMediaTypePhoto) {
+        type = ZFCameraTypePhoto;
+    }else if (self.photoManager.type == ZFPhotoModelMediaTypeVideo) {
+        type = ZFCameraTypeVideo;
+    }
+    if (self.photoManager.showFullScreenCamera) {
+
+    }else {
+        ZFCameraViewController *vc = [[ZFCameraViewController alloc] initWithCameraType:ZFCameraPopTypeCustom];
+        vc.cameraDelegate = self;
+        vc.type = type;
+        vc.photoManager = self.photoManager;
+        [self presentViewController:vc animated:YES completion:nil];
+    }
+}
+
+#pragma mark -
+-(void)didClickSelectCell:(ZFPhotoCollectionViewCell *)selectCell Model:(ZFPhotoModel *)model IsSelect:(BOOL)isSelected{
+    
+    if (isSelected) {//选中
+        NSString *max = [NSString stringWithFormat:@"最多选择%ld张",self.photoManager.maxCount];
+        
+        if (model.type == ZFPhotoModelMediaTypeLivePhoto) {
+            [selectCell startLivePhoto];
+        }
+        
+        if (model.type == ZFPhotoModelMediaTypeCamera) {
+           
+            
+        }else if (model.type == ZFPhotoModelMediaTypePhoto || model.type == ZFPhotoModelMediaTypeLivePhoto){
+            if (self.photoManager.selectedPhotos.count == self.photoManager.maxCount) {
+                [RemindView showViewWithTitle:NSLocalizedString(max, nil) location:LocationTypeMIDDLE];
+                // 已经达到图片最大选择数
+                selectCell.isSelected = NO;
+                return;
+            }
+            model.selected = isSelected;
+            [[self.photoManager mutableArrayValueForKey:@"selectedPhotos"] addObject:model];
+        }else if (model.type == ZFPhotoModelMediaTypeVideo){
+            
+            
+        }
+    }else{//取消选中
+        if (model.type == ZFPhotoModelMediaTypeLivePhoto) {
+            [selectCell stopLivePhoto];
+        }
+
+        for (ZFPhotoModel *subModel in self.photoManager.selectedPhotos) {
+        
+            if (model.type == ZFPhotoModelMediaTypeCamera) {
+                
+                
+            }else if (model.type == ZFPhotoModelMediaTypePhoto || model.type == ZFPhotoModelMediaTypeLivePhoto){
+                if ([subModel.asset.localIdentifier isEqualToString:model.asset.localIdentifier]) {
+                    [[self.photoManager mutableArrayValueForKey:@"selectedPhotos"] removeObject:subModel];
+                }
+                model.selected = isSelected;
+            }else if (model.type == ZFPhotoModelMediaTypeVideo){
+                
+                
+            }
+        }
+        
+    }
+
+}
+
+
+#pragma mark - 添加观察者
+-(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
+    if ([keyPath isEqualToString:@"selectedPhotos"]) {
+        self.photoHeadView.count = self.photoManager.selectedPhotos.count;
+    }
+}
+#pragma mark - ZFCameraViewDelegate
+-(void)zf_photoCapViewController:(UIViewController *)viewController didFinishDismissWithPhoto:(ZFPhotoModel *)model{
+    [self.allObjs insertObject:model atIndex:1];
+    [[self.photoManager mutableArrayValueForKey:@"selectedPhotos"] addObject:model];
+    [self.collectionView reloadData];
+}
+#pragma mark - PHPhotoLibraryChangeObserver
+- (void)photoLibraryDidChange:(PHChange *)changeInstance{
+    /*
+    __weak ZFPhotoViewController *ws = self;
+    NSMutableArray *mutableArr = [self.albums mutableCopy];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [mutableArr enumerateObjectsUsingBlock:^(ZFAlbumModel *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        
+           PHFetchResultChangeDetails *deltails = [changeInstance changeDetailsForFetchResult:obj.result];
+            NSLog(@"%d",deltails.hasIncrementalChanges);
+            if(deltails.hasIncrementalChanges){
+                PHAsset *asset = deltails.fetchResultAfterChanges.lastObject;
+                NSLog(@"asset lat =%@",asset.localIdentifier);
+                ZFPhotoModel *model = [[ZFPhotoModel alloc] init];
+                model.asset = asset;
+                model.selected = YES;
+                [ws.allObjs insertObject:model atIndex:1];
+                [[ws.photoManager mutableArrayValueForKey:@"selectedPhotos"] addObject:model];
+                [ws.collectionView reloadData];
+                *stop = YES;
             }
         }];
-        if (reloadRequired) {
-            //刷新数据
-            ws.sectionResults = updatedSectionFetchResults;
-            [ws zf_getFirstData:[ws.sectionResults firstObject] WithAdd:YES];
-            [ws zf_addCamareImage];
-            [ws.collectionView reloadData];
-        }
     });
+*/
 }
-
+/** 销毁 */
 -(void)zf_dismess{
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
-#pragma mark - 观察者
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
-    if ([keyPath isEqualToString:@"seletedPhotos"]) {
-        self.photoHeadView.count = self.notificationModel.seletedPhotos.count;
-    }
-}
-
-#pragma mark - 权限
-//权限
--(void)zf_permission{
-    if ([PHPhotoLibrary authorizationStatus] != PHAuthorizationStatusAuthorized) {
-        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-            
-            switch (status) {
-                case PHAuthorizationStatusNotDetermined:
-                    NSLog(@"PHAuthorizationStatusNotDetermined");
-                    break;
-                case PHAuthorizationStatusRestricted:
-                    NSLog(@"PHAuthorizationStatusRestricted");
-                    break;
-                case PHAuthorizationStatusDenied:{
-                    NSLog(@"PHAuthorizationStatusDenied");
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self zf_showPremission];
-                    });
-                    
-                    break;
-                }
-                case PHAuthorizationStatusAuthorized:{
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self zf_loadData];
-                        NSLog(@"PHAuthorizationStatusAuthorized");
-                    });
-                    
-                    break;
-                }
-                default:
-                    break;
-            }
-        }];
-    } else {
-        [self zf_loadData];
-    }
-}
-
--(void)zf_showPremission{
-    __weak ZFPhotoViewController *ws = self;
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"" message:@"请在设备的\"设置-隐私-相机\"中允许访问相机。" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *cancal = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        [ws zf_dismess];
-    }];
-    
-    UIAlertAction *action = [UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"prefs:root=Privacy&path=PHOTOS"]];
-    }];
-    
-    [alertController addAction:action];
-    [alertController addAction:cancal];
-    [self presentViewController:alertController animated:YES completion:nil];
-    
-}
 #pragma mark - 通知
 -(void)zf_closeNotifer{
     [self.photoHeadView zfScoll];
 }
 
-#pragma mark - 代理
-
-//- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated{
-//    BOOL isfirstPage = [viewController isKindOfClass:[self class]];
-//    [self.navigationController setNavigationBarHidden:isfirstPage animated:YES];
-//}
-
-#pragma mark --  动画 方法
-// 进入相机的动画
-- (void)zf_goToDetailAnimation{
-    if (self.view.subviews.count < 2) {
-        [self.view addSubview:_camareViewController.view];
-    }
-    __weak ZFPhotoViewController *ws = self;
-    [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionLayoutSubviews animations:^{
-        ws.camareViewController.view.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeight);
-        ws.contentView.frame = CGRectMake(0, kScreenHeight,kScreenWidth, kScreenHeight);
-    } completion:^(BOOL finished) {
-        [ws.camareViewController zf_onpenAnnimation];
-    }];
-}
-// 返回第一个界面的动画
-- (void)zf_backToFirstPageAnimation {
-    __weak ZFPhotoViewController *ws = self;
-    [UIView animateWithDuration:0.3 delay:0.0 options:UIViewAnimationOptionLayoutSubviews animations:^{
-        ws.camareViewController.view.frame = CGRectMake(0,-kScreenHeight, kScreenWidth, kScreenHeight);
-        ws.contentView.frame = CGRectMake(0, 0, kScreenWidth, kScreenHeight);
-    } completion:^(BOOL finished) {
-        
-    }];
-}
-
 #pragma mark --- 懒加载
--(UIView *)contentView{
-    if (_contentView == nil) {
-        _contentView = [[UIView alloc] initWithFrame:self.view.bounds];
-    }
-    return _contentView;
-}
--(NSMutableArray *)dataArr{
-    if (_dataArr == nil) {
-        _dataArr = [NSMutableArray array];
-    }
-    return _dataArr;
-}
-- (NSMutableDictionary *)selectedAssetsDic {
-    if (_selectedAssetsDic == nil) {
-        _selectedAssetsDic = [NSMutableDictionary dictionary];
-    }
-    return _selectedAssetsDic;
-}
--(NSMutableArray <PHFetchResult *> *)sectionResults{
-    if(_sectionResults == nil){
-        _sectionResults = [NSMutableArray array];
-    }
-    return _sectionResults;
-}
-- (NSMutableArray *)sectionCollectResults {
-    if (_sectionCollectResults == nil) {
-        _sectionCollectResults = [NSMutableArray array];
-    }
-    return _sectionCollectResults;
-}
-
--(ZFNSNotificationModel *)notificationModel{
-    if (_notificationModel == nil) {
-        _notificationModel = [[ZFNSNotificationModel alloc] init];
-    }
-    return _notificationModel;
-}
 
 #pragma mark  --- 相册获取参考数据
 //获取自定义相册簿 （自己创建的相册）
@@ -559,15 +387,25 @@
  PHImageResultIsPlaceholderKey = 0;
  PHImageResultOptimizedForSharing = 0;
  PHImageResultWantedImageFormatKey = 4035;
+ 
+ 
  */
-
+/*
+ synchronous：指定请求是否同步执行。
+ resizeMode：对请求的图像怎样缩放。有三种选择：None，不缩放；Fast，尽快地提供接近或稍微大于要求的尺寸；Exact，精准提供要求的尺寸。
+ deliveryMode：图像质量。有三种值：Opportunistic，在速度与质量中均衡；HighQualityFormat，不管花费多长时间，提供高质量图像；FastFormat，以最快速度提供好的质量。
+ 这个属性只有在 synchronous 为 true 时有效。
+ normalizedCropRect：用于对原始尺寸的图像进行裁剪，基于比例坐标。只在 resizeMode 为 Exact 时有效。
+ */
 -(void)dealloc{
+    [self.photoManager.selectedPhotos removeAllObjects];
     //销毁观察相册变化的观察者
     [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self.notificationModel removeObserver:self forKeyPath:@"seletedPhotos"];
+    [self.photoManager removeObserver:self forKeyPath:@"selectedPhotos"];
     NSLog(@"销毁 %s",__FUNCTION__);
 }
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-@class PHAssetCollection;
+@class ZFAlbumModel;
 //展示视图popCell
 @interface ZFPhotoTableViewCell : UITableViewCell
-@property(strong,nonatomic)PHAssetCollection *assetCollection;
+@property(strong,nonatomic)ZFAlbumModel *model;
 @end
