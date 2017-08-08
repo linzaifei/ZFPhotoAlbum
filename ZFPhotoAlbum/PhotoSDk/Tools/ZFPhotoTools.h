@@ -21,6 +21,7 @@
 +(PHImageRequestID)zf_getPhotoFromPHAsset:(PHAsset *)asset size:(CGSize)size completion:(void(^)(UIImage *image,NSDictionary *info))completion;
 +(int32_t)zf_getfetchPhotoWithAsset:(id)asset photoSize:(CGSize)photoSize completion:(void (^)(UIImage *img,NSDictionary *info,BOOL isDegraded))completion;
 +(PHImageRequestID)zf_getLivePhotoFormPHAsset:(PHAsset *)asset Size:(CGSize)size Completion:(void (^)(PHLivePhoto *livePhoto, NSDictionary *info))completion;
-
+/** 此方法只会回调一次 */
++(void)zf_getHighQualityFromPHAsset:(PHAsset *)asset size:(CGSize)size completion:(void(^)(UIImage *image,NSDictionary *info))completion error:(void(^)(NSDictionary *info))error;
 
 @end

@@ -130,4 +130,29 @@
     }];
 }
 
+/** 根据PHAsset对象获取照片信息  此方法只会回调一次 */
++(void)zf_getHighQualityFromPHAsset:(PHAsset *)asset size:(CGSize)size completion:(void(^)(UIImage *image,NSDictionary *info))completion error:(void(^)(NSDictionary *info))error{
+
+    PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
+    option.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
+    option.resizeMode = PHImageRequestOptionsResizeModeFast;
+    option.synchronous = YES;
+    
+    [[PHCachingImageManager defaultManager] requestImageForAsset:asset targetSize:size contentMode:PHImageContentModeAspectFill options:option resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+        BOOL downloadFinined = (![[info objectForKey:PHImageCancelledKey] boolValue] && ![info objectForKey:PHImageErrorKey] && ![[info objectForKey:PHImageResultIsDegradedKey] boolValue]);
+        if (downloadFinined && result) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (completion) {
+                    completion(result,info);
+                }
+            });
+        }else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (error) {
+                    error(info);
+                }
+            });
+        }
+    }];
+}
 @end
