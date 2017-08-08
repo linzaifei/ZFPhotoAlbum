@@ -68,11 +68,13 @@
     
     UIAlertAction *album = [UIAlertAction actionWithTitle:@"相册" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
         ZFPhotoViewController *photoViewController = [[ZFPhotoViewController alloc] init];
-        photoViewController.delegate = self;
-        self.photoManager.selectedPhotos = self.dataArr;
-        photoViewController.photoManager = self.photoManager;
+        photoViewController.delegate = ws;
+        if(ws.dataArr){
+            ws.photoManager.selectedPhotos = ws.dataArr;
+        }
+        photoViewController.photoManager = ws.photoManager;
         
-        [self presentViewController:[[UINavigationController alloc] initWithRootViewController:photoViewController] animated:YES completion:NULL];
+        [ws presentViewController:[[UINavigationController alloc] initWithRootViewController:photoViewController] animated:YES completion:NULL];
     }];
     
     UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
@@ -118,12 +120,12 @@
     }
 }
 #pragma mark - 懒加载
--(NSMutableArray *)dataArr{
-    if (_dataArr == nil) {
-        _dataArr = [NSMutableArray array];
-    }
-    return _dataArr;
-}
+//-(NSMutableArray *)dataArr{
+//    if (_dataArr == nil) {
+//        _dataArr = [NSMutableArray array];
+//    }
+//    return _dataArr;
+//}
 -(ZFPhotoManger *)photoManager{
     if (_photoManager == nil) {
         _photoManager = [[ZFPhotoManger alloc] initPhotoMangerWithSelectType:ZFPhotoMangerSelectTypePhoto];

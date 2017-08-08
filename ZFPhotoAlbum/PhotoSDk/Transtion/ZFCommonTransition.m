@@ -12,6 +12,8 @@
 #import "ZFPhotoCollectionViewCell.h"
 #import "ZFBrowCollectionCell.h"
 #import <Photos/Photos.h>
+#import "ZFPhotoModel.h"
+#import "ZFPhotoTools.h"
 
 @implementation ZFCommonTransition
 
@@ -144,13 +146,27 @@
 -(void)zf_pushAnnimationTransition:(id <UIViewControllerContextTransitioning>)transitionContext{
     ZFBrowsePhotoViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     ZFPhotoViewController *fromVC = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
-    UIView *containerView = transitionContext.containerView;
     
+    UIView *containerView = transitionContext.containerView;
     //私有方法获取方法 （小图）
     UICollectionView *collectionView = [fromVC valueForKey:@"collectionView"];
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:toVC.currentIndex inSection:0];
     //获取cell上的视图
     ZFPhotoCollectionViewCell *cell = (ZFPhotoCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    ZFPhotoModel *model = cell.model;
+    
+    [ZFPhotoTools zf_getHighQualityFromPHAsset:model.asset size:CGSizeMake(model.endImageSize.width * 0.8, model.endImageSize.height * 0.8)  completion:^(UIImage *image, NSDictionary *info) {
+        [self pushAnimation:transitionContext Cell:cell Image:image Model:model FromVC:fromVC ToVC:toVC];
+        
+    } error:^(NSDictionary *info) {
+        [self pushAnimation:transitionContext Cell:cell Image:model.cameraPhoto Model:model FromVC:fromVC ToVC:toVC];
+    }];
+    
+    
+    
+}
+
+-(void)pushAnimation:(id <UIViewControllerContextTransitioning>)transitionContext Cell:(ZFPhotoCollectionViewCell *)cell Image:(UIImage *)image Model:(ZFPhotoModel *)model FromVC:(ZFPhotoViewController *)fromVC ToVC:(UIViewController *)toVC{
     PHAsset *asset = [cell valueForKey:@"asset"];
     UIView *view = nil;
     if (asset.mediaSubtypes == PHAssetMediaSubtypePhotoLive) {
@@ -158,7 +174,7 @@
     }else{
         view = [cell.contentView.subviews firstObject];
     }
-    
+    /*
     //获取展示的图片
     UICollectionView *browCollectionView = [toVC valueForKey:@"collectionView"];
     //获取cell上的视图
@@ -170,7 +186,7 @@
     }else{
         browView = browCell.zf_photoScrollView.zf_photoImgView;
     }
-
+    
     
     
     //创建一个View的截图 把原来的view隐藏
@@ -182,7 +198,7 @@
     //设置控制器的位置
     toVC.view.frame = [transitionContext finalFrameForViewController:toVC];
     toVC.view.alpha = 0;
-   
+    
     //添加到容器中
     [containerView addSubview:toVC.view];
     [containerView addSubview:snapshotView];
@@ -194,13 +210,17 @@
     } completion:^(BOOL finished) {
         if (finished) {
             snapshotView.hidden = YES;
-//            toVC.showImageView.image = cell.imageView.image;
+            //            toVC.showImageView.image = cell.imageView.image;
             [transitionContext completeTransition:YES];
         }
         
     }];
-    
+     */
 }
+
+
+
+
 -(void)zf_popAnnimationTransition:(id <UIViewControllerContextTransitioning>)transitionContext{
 //    ZFViewController *toVC = [transitionContext viewControllerForKey: UITransitionContextFromViewControllerKey];
 //    ViewController *fromVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];

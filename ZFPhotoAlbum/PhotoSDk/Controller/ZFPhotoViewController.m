@@ -11,6 +11,7 @@
 #import "ZFPhotoCollectionViewCell.h"
 #import "RemindView.h"
 #import "ZFPopShowPhotoViewController.h"
+#import "ZFBrowsePhotoViewController.h"
 #import "ZFCameraViewController.h"
 #import "ZFPhotoAlbum.h"
 #import "ZFPhotoPresentationVC.h"
@@ -180,10 +181,13 @@
             [self goCameraViewController];
             break;
         case ZFPhotoModelMediaTypePhoto://照片,live照片
-        case ZFPhotoModelMediaTypeLivePhoto:
+        case ZFPhotoModelMediaTypeLivePhoto:{
             NSLog(@"点击照片");
-            
-            break;
+            ZFBrowsePhotoViewController *browsePhotoViewController = [[ZFBrowsePhotoViewController alloc] init];
+            browsePhotoViewController.currentIndex = indexPath.item;
+            self.navigationController.delegate = browsePhotoViewController;
+            [self.navigationController pushViewController:browsePhotoViewController animated:YES];
+        }break;
         case ZFPhotoModelMediaTypeVideo://视屏
             NSLog(@"视频");
             break;
@@ -285,6 +289,12 @@
 }
 #pragma mark - ZFCameraViewDelegate
 -(void)zf_photoCapViewController:(UIViewController *)viewController didFinishDismissWithPhoto:(ZFPhotoModel *)model{
+    if(self.photoManager.selectedPhotos.count == self.photoManager.maxCount){
+        model.selected = NO;
+        [self.allObjs insertObject:model atIndex:1];
+        [self.collectionView reloadData];
+        return;
+    }
     [self.allObjs insertObject:model atIndex:1];
     [[self.photoManager mutableArrayValueForKey:@"selectedPhotos"] addObject:model];
     [self.collectionView reloadData];

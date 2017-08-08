@@ -12,10 +12,11 @@
 #import "ZFPhotoHeadView.h"
 #import "ZFCommonTransition.h"
 #define  MIN_Space 20
-@interface ZFBrowsePhotoViewController ()<UICollectionViewDelegateFlowLayout,UICollectionViewDataSource>
+@interface ZFBrowsePhotoViewController ()<UICollectionViewDelegateFlowLayout,UICollectionViewDataSource,UIViewControllerTransitioningDelegate>
 @property(strong,nonatomic)UICollectionView *collectionView;
 @property(strong,nonatomic)ZFBrowHeadViewBar *browHeadViewBar;
 @property(strong,nonatomic)NSIndexPath *lastIndexPath;
+@property(strong,nonatomic)ZFCommonTransition *commonTransition;
 
 @end
 
@@ -30,6 +31,14 @@
     [super viewWillLayoutSubviews];
 //    [self.collectionView scrollToItemAtIndexPath:self.indexPath atScrollPosition:UICollectionViewScrollPositionRight animated:NO];
     
+}
+
+-(instancetype)init{
+    if (self = [super init]) {
+        self.transitioningDelegate = self;
+        self.modalPresentationStyle = UIModalPresentationCustom;
+    }
+    return self;
 }
 
 - (void)viewDidLoad {
@@ -153,17 +162,36 @@
 }
 
 #pragma mark - 代理
-- (nullable id <UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
-                                            animationControllerForOperation:(UINavigationControllerOperation)operation
-                                                         fromViewController:(UIViewController *)fromVC
-                                                           toViewController:(UIViewController *)toVC  NS_AVAILABLE_IOS(7_0){
-
+- (nullable id <UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController animationControllerForOperation:(UINavigationControllerOperation)operation
+    fromViewController:(UIViewController *)fromVC toViewController:(UIViewController *)toVC  NS_AVAILABLE_IOS(7_0){
     if(operation == UINavigationControllerOperationPush){
-        return [[ZFCommonTransition alloc] init];
+        self.commonTransition.type = ZFTransitionTypePush;
+        return self.commonTransition;
     }else{
-        return nil;
+        self.commonTransition.type = ZFTransitionTypePop;
+        return self.commonTransition;
     }
 }
+
+//- (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source{
+//
+//    
+//
+//}
+//
+//- (nullable id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed{
+//
+//}
+
+#pragma mark - 懒加载
+-(ZFCommonTransition *)commonTransition{
+    if (_commonTransition == nil) {
+        _commonTransition = [[ZFCommonTransition alloc] init];
+    }
+    return _commonTransition;
+}
+
+
 
 -(void)dealloc{
     NSLog(@"销毁%s",__FUNCTION__);
