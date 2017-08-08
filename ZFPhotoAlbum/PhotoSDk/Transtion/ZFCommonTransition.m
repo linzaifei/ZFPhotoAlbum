@@ -14,6 +14,7 @@
 #import <Photos/Photos.h>
 #import "ZFPhotoModel.h"
 #import "ZFPhotoTools.h"
+#import "ZFPhotoAlbum.h"
 
 @implementation ZFCommonTransition
 
@@ -147,7 +148,7 @@
     ZFBrowsePhotoViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     ZFPhotoViewController *fromVC = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     
-    UIView *containerView = transitionContext.containerView;
+    
     //私有方法获取方法 （小图）
     UICollectionView *collectionView = [fromVC valueForKey:@"collectionView"];
     NSIndexPath *indexPath = [NSIndexPath indexPathForItem:toVC.currentIndex inSection:0];
@@ -161,61 +162,42 @@
     } error:^(NSDictionary *info) {
         [self pushAnimation:transitionContext Cell:cell Image:model.cameraPhoto Model:model FromVC:fromVC ToVC:toVC];
     }];
-    
-    
-    
+
 }
 
 -(void)pushAnimation:(id <UIViewControllerContextTransitioning>)transitionContext Cell:(ZFPhotoCollectionViewCell *)cell Image:(UIImage *)image Model:(ZFPhotoModel *)model FromVC:(ZFPhotoViewController *)fromVC ToVC:(UIViewController *)toVC{
-    PHAsset *asset = [cell valueForKey:@"asset"];
-    UIView *view = nil;
-    if (asset.mediaSubtypes == PHAssetMediaSubtypePhotoLive) {
-        view = cell.contentView.subviews[1];
-    }else{
-        view = [cell.contentView.subviews firstObject];
-    }
-    /*
-    //获取展示的图片
-    UICollectionView *browCollectionView = [toVC valueForKey:@"collectionView"];
-    //获取cell上的视图
-    ZFBrowCollectionCell *browCell = (ZFBrowCollectionCell *)[browCollectionView cellForItemAtIndexPath:indexPath];
-    PHAsset *borwAsset = [cell valueForKey:@"asset"];
-    UIView *browView = nil;
-    if (borwAsset.mediaSubtypes == PHAssetMediaSubtypePhotoLive) {
-        browView = (UIView *)browCell.zf_photoScrollView.livePhotoView;
-    }else{
-        browView = browCell.zf_photoScrollView.zf_photoImgView;
-    }
-    
-    
+    UIView *containerView = transitionContext.containerView;
+    UIImageView *photoImgView = cell.photoimgView;
     
     //创建一个View的截图 把原来的view隐藏
-    UIView *snapshotView = [view snapshotViewAfterScreenUpdates:NO];
-    //获取这个假视图在toView上的位置
+    UIView *snapshotView = [photoImgView snapshotViewAfterScreenUpdates:NO];
+
     //这边必须使用 toVC.sourceView  不能使用snapshotView 测试
-    snapshotView.frame = [view convertRect:view.frame toView:containerView];
-    
+    snapshotView.frame = [photoImgView convertRect:photoImgView.frame toView:containerView];
     //设置控制器的位置
-    toVC.view.frame = [transitionContext finalFrameForViewController:toVC];
-    toVC.view.alpha = 0;
-    
+//    toVC.view.frame = [transitionContext finalFrameForViewController:toVC];
     //添加到容器中
     [containerView addSubview:toVC.view];
     [containerView addSubview:snapshotView];
+    ZFBrowsePhotoViewController *browVC = (ZFBrowsePhotoViewController *)toVC;
+    //私有方法获取方法 （小图）
+    UICollectionView *collectionView = [browVC valueForKey:@"collectionView"];
+    collectionView.hidden = YES;
+    CGFloat imgWidht = model.endImageSize.width;
+    CGFloat imgHeight = model.endImageSize.height;
+
     //执行动画
-    [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0.0 usingSpringWithDamping:0.5 initialSpringVelocity:0.9 options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseOut animations:^{
-        snapshotView.frame = browView.frame;
-        toVC.view.alpha = 1;
-        
+    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+        snapshotView.frame = CGRectMake((kScreenWidth - imgWidht) / 2, (kScreenHeight - imgHeight) / 2 + 32, imgWidht, imgHeight);;
     } completion:^(BOOL finished) {
         if (finished) {
+            collectionView.hidden = NO;
             snapshotView.hidden = YES;
-            //            toVC.showImageView.image = cell.imageView.image;
             [transitionContext completeTransition:YES];
         }
         
     }];
-     */
+
 }
 
 

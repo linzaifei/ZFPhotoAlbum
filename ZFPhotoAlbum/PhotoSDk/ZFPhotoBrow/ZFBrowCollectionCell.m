@@ -10,6 +10,7 @@
 #import <Photos/Photos.h>
 #import <PhotosUI/PhotosUI.h>
 #import "ZFBtn.h"
+#import "ZFPhotoModel.h"
 @interface ZFBrowCollectionCell ()
 @property(strong,nonatomic)ZFBtn *selectBtn;
 @property(strong,nonatomic)PHAsset *asset;
@@ -25,8 +26,8 @@
 }
 
 -(void)setUI{
-    _zf_photoScrollView = [[ZFPhotoScrollView alloc] initWithFrame:self.bounds];
-    [self.contentView addSubview:_zf_photoScrollView];
+    _photoScrollView = [[ZFPhotoScrollView alloc] initWithFrame:self.bounds];
+    [self.contentView addSubview:_photoScrollView];
 
     self.selectBtn = [ZFBtn new];
     self.selectBtn.translatesAutoresizingMaskIntoConstraints = NO;
@@ -42,6 +43,15 @@
 
 }
 
+-(void)setModel:(ZFPhotoModel *)model{
+    _model = model;
+ 
+    
+    
+
+}
+
+
 //设置数据
 -(void)zf_setAssest:(id)data{
     if ([data isKindOfClass:[PHAsset class]]) {
@@ -50,33 +60,30 @@
         __weak ZFBrowCollectionCell *ws = self;
         //判断是不是live视图
         if (asset.mediaSubtypes == PHAssetMediaSubtypePhotoLive) {
-            self.zf_photoScrollView.livePhotoView.hidden = NO;
-            self.zf_photoScrollView.zf_photoImgView.hidden = YES;
+            self.photoScrollView.photoImgView.hidden = YES;
             PHLivePhotoRequestOptions *option = [[PHLivePhotoRequestOptions alloc] init];
             option.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
             option.networkAccessAllowed = YES;
             option.progressHandler = ^(double progress, NSError * _Nullable error, BOOL * _Nonnull stop, NSDictionary * _Nullable info) {
                 NSLog(@"%f",progress);
             };
-            [[PHImageManager defaultManager] requestLivePhotoForAsset:asset targetSize:CGSizeMake(300, 300) contentMode:PHImageContentModeDefault options:option resultHandler:^(PHLivePhoto * _Nullable livePhoto, NSDictionary * _Nullable info) {
-                ws.zf_photoScrollView.livePhotoView.livePhoto = livePhoto;
-                [ws.zf_photoScrollView.livePhotoView startPlaybackWithStyle:PHLivePhotoViewPlaybackStyleHint];
-            }];
+            
+        
         }else{
-            self.zf_photoScrollView.livePhotoView.hidden = YES;
-            self.zf_photoScrollView.zf_photoImgView.hidden = NO;
+
+            self.photoScrollView.photoImgView.hidden = NO;
             PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
             // 同步获得图片, 只会返回1张图片
             options.synchronous = YES;
             options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
             [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(300, 300) contentMode:PHImageContentModeDefault options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
                 if(result != nil){
-                    ws.zf_photoScrollView.zf_photoImgView.image = result;
+                    ws.photoScrollView.photoImgView.image = result;
                 }
             }];
         }
     }else if([data isKindOfClass:[UIImage class]]){
-        _zf_photoScrollView.zf_photoImgView.image = data;
+        _photoScrollView.photoImgView.image = data;
     }else if([data isKindOfClass:[NSString class]]){
         
         
@@ -89,9 +96,7 @@
 }
 
 -(void)clickCollect:(ZFBtn *)btn{
-    if (self.btnSelectBlock) {
-        self.btnSelectBlock(self.asset, btn.selected);
-    }
+
 }
 
 
@@ -120,15 +125,15 @@
     self.minimumZoomScale = 1;
     
     //创建子视图
-    _zf_photoImgView = [[UIImageView alloc] initWithFrame:self.bounds];
+    _photoImgView = [[UIImageView alloc] initWithFrame:self.bounds];
     //设置图片等比例缩放
-    _zf_photoImgView.contentMode = UIViewContentModeScaleAspectFit;
-    [self addSubview:_zf_photoImgView];
+    _photoImgView.contentMode = UIViewContentModeScaleAspectFit;
+    [self addSubview:_photoImgView];
     
-    self.livePhotoView = [[PHLivePhotoView alloc] initWithFrame:self.bounds];
-    self.livePhotoView.delegate =self;
-    self.livePhotoView.contentMode = UIViewContentModeScaleAspectFit;
-    [self addSubview:self.livePhotoView];
+//    self.livePhotoView = [[PHLivePhotoView alloc] initWithFrame:self.bounds];
+//    self.livePhotoView.delegate =self;
+//    self.livePhotoView.contentMode = UIViewContentModeScaleAspectFit;
+//    [self addSubview:self.livePhotoView];
     
     
     /**
@@ -167,7 +172,7 @@
 }
 
 - (UIView *)viewForZoomingInScrollView:(UIScrollView *)scrollView {
-    return _zf_photoImgView;
+    return _photoImgView;
 }
 
 
