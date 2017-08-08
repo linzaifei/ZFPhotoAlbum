@@ -186,6 +186,8 @@
             ZFBrowsePhotoViewController *browsePhotoViewController = [[ZFBrowsePhotoViewController alloc] init];
             browsePhotoViewController.currentIndex = indexPath.item;
             self.navigationController.delegate = browsePhotoViewController;
+            browsePhotoViewController.photoManager = self.photoManager;
+            browsePhotoViewController.photoItems = self.allObjs;
             [self.navigationController pushViewController:browsePhotoViewController animated:YES];
         }break;
         case ZFPhotoModelMediaTypeVideo://视屏

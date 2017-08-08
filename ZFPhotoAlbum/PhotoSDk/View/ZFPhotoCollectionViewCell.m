@@ -14,7 +14,7 @@
 #import "ZFPhotoTools.h"
 @interface ZFPhotoCollectionViewCell()<PHLivePhotoViewDelegate>
 @property(strong,nonatomic)ZFBtn *selectBtn;
-@property(strong,nonatomic)UIImageView *photoimgView;
+
 @property(strong,nonatomic)UIImageView *liveImgView;
 @property (strong, nonatomic) UIImageView *videoIcon;
 //live

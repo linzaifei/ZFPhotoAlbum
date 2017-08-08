@@ -16,7 +16,7 @@ typedef void(^ZFClickItemBlock)(ZFPhotoCollectionViewCell *selectCell,ZFPhotoMod
 
 
 @interface ZFPhotoCollectionViewCell : UICollectionViewCell
-
+@property(strong,nonatomic)UIImageView *photoimgView;
 @property(strong,nonatomic)ZFPhotoModel *model;
 @property(copy,nonatomic)NSString *localIdentifier;
 @property(assign,nonatomic)int32_t requestID;
