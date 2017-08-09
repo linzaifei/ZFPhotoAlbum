@@ -1,4 +1,4 @@
-//
+ //
 //  ZFBrowCollectionCell.m
 //  ZFPhotoAlbum
 //
@@ -11,9 +11,12 @@
 #import <PhotosUI/PhotosUI.h>
 #import "ZFBtn.h"
 #import "ZFPhotoModel.h"
+#import "ZFPhotoTools.h"
+
 @interface ZFBrowCollectionCell ()
 @property(strong,nonatomic)ZFBtn *selectBtn;
 @property(strong,nonatomic)PHAsset *asset;
+@property (assign, nonatomic) PHImageRequestID requestID;
 @end
 
 @implementation ZFBrowCollectionCell
@@ -27,6 +30,7 @@
 
 -(void)setUI{
     _photoScrollView = [[ZFPhotoScrollView alloc] initWithFrame:self.bounds];
+    _photoScrollView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:_photoScrollView];
 
     self.selectBtn = [ZFBtn new];
@@ -39,6 +43,12 @@
 
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_selectBtn]-5-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_selectBtn)]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[_selectBtn]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_selectBtn)]];
+    
+    
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_photoScrollView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_photoScrollView)]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[_photoScrollView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_photoScrollView)]];
+    
+    
 
 
 }
@@ -46,9 +56,51 @@
 -(void)setModel:(ZFPhotoModel *)model{
     _model = model;
  
+    CGFloat width = self.frame.size.width;
+    CGFloat height = self.frame.size.height;
+    CGFloat imgWidth = model.imageSize.width;
+    CGFloat imgHeight = model.imageSize.height;
+    CGFloat w;
+    CGFloat h;
     
     
+    imgHeight = width / imgWidth * imgHeight;
+    if (imgHeight > height) {
+        w = height / model.imageSize.height * imgWidth;
+        h = height;
+//        self.scrollView.maximumZoomScale = width / w + 0.5;
+    }else {
+        w = width;
+        h = imgHeight;
+//        self.scrollView.maximumZoomScale = 2.5;
+    }
+//    _imageView.frame = CGRectMake(0, 0, w, h);
+//    _imageView.center = CGPointMake(width / 2, height / 2);
 
+    if (model.previewPhoto) {
+        self.photoScrollView.photoImgView.image = model.previewPhoto;
+    }else {
+    
+        __weak typeof(self) weakSelf = self;
+        PHImageRequestID requestID;
+        if (imgHeight > imgWidth / 9 * 17) {
+            
+            requestID =[ZFPhotoTools zf_getPhotoFromPHAsset:model.asset size:CGSizeMake(width * 0.5, height * 0.5) completion:^(UIImage *image, NSDictionary *info) {
+                weakSelf.photoScrollView.photoImgView.image = image;
+            }];
+            
+        }else {
+            
+            requestID =[ZFPhotoTools zf_getPhotoFromPHAsset:model.asset size:CGSizeMake(model.endImageSize.width * 0.8, model.endImageSize.height * 0.8) completion:^(UIImage *image, NSDictionary *info) {
+                weakSelf.photoScrollView.photoImgView.image = image;
+            }];
+            
+        }
+        if (self.requestID != requestID) {
+            [[PHImageManager defaultManager] cancelImageRequest:self.requestID];
+        }
+        self.requestID = requestID;
+    }
 }
 
 
