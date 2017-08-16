@@ -45,7 +45,6 @@
     self.detailLabel.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:self.detailLabel];
     
-
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[_photoImageView]-5-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_photoImageView)]];
     
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[_photoImageView]-10-[_titleLabel]-10-[_detailLabel]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_photoImageView,_detailLabel,_titleLabel)]];
@@ -65,7 +64,6 @@
     [ZFPhotoTools zf_getPhotoFromPHAsset:model.asset size:CGSizeMake(60, 60)  completion:^(UIImage *image, NSDictionary *info) {
         ws.photoImageView.image = image;
     }];
-    
 }
 
 - (void)awakeFromNib {

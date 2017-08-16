@@ -16,6 +16,7 @@
 #import "ZFPhotoTools.h"
 #import "ZFPhotoModel.h"
 #import "ZFPhotoManger.h"
+
 #define bottom_height 190
 
 
@@ -114,37 +115,14 @@
     _downImageView.backgroundColor = [UIColor whiteColor];
     [self.view insertSubview:_downImageView belowSubview:self.takePhotoHeadView];
 
-    __weak ZFCameraViewController *ws = self;
-    //退出
-    camareHeadView.cancelBlock = ^(){
-        [ws zf_closeAnnimation];
-    };
-    //闪光灯
-    camareHeadView.flashBlock = ^(UIButton *changeBtn){
-        [ws zf_AutoFlash:changeBtn];
-    };
-    //切换摄像头
-    camareHeadView.changeBlock = ^(){
-        if(!ws.isTake){
-            [ws zf_chageCamera];
-        }
-    };
-    //拍照
-    self.takePhotoHeadView.takePhotoBlock = ^{
-        [ws zf_TakePhotoAction];
-    };
-    //取消相册
-    self.takePhotoHeadView.cancelBlock = ^(){
-        if(ws.isTake){
-            [ws zf_cancel];
-        }
-    };
-    //选择相册
-    self.takePhotoHeadView.chooseBlock = ^(){
-        if (ws.isTake) {
-            [ws zf_savePhoto];
-        }
-    };
+    WeakSelf(ws);
+    [camareHeadView setDidClickWithType:^(ZFClickType type,UIButton *btn) {
+        [ws setBlockWithType:type WithBtn:btn];
+    }];
+    [self.takePhotoHeadView setDidClickWithType:^(ZFClickType type, UIButton *btn) {
+        [ws setBlockWithType:type WithBtn:btn];
+    }];
+    
     ///------------布局--------
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[camareHeadView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(camareHeadView)]];
     
@@ -160,6 +138,40 @@
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:[_downImageView(==sppding)]-0-[_takePhotoHeadView(==bottomHeight)]-0-|" options:0 metrics:@{@"sppding":[NSNumber numberWithFloat:width],@"bottomHeight":[NSNumber numberWithInteger:bottom_height]} views:NSDictionaryOfVariableBindings(_downImageView,_takePhotoHeadView)]];
     [self zf_onpenAnnimation];
 }
+/** 点击事件 */
+-(void)setBlockWithType:(ZFClickType)type WithBtn:(UIButton *)btn{
+    switch (type) {
+        case ZFClickTypeBack://返回
+            [self zf_closeAnnimation];
+            break;
+        case ZFClickTypeFlash://却换闪光灯
+            [self zf_AutoFlash:btn];
+            break;
+        case ZFClickTypeChangeCamera://却换摄像头
+            if(!self.isTake){
+                [self zf_chageCamera];
+            }
+            break;
+        case ZFClickTypeTakePhoto://拍照
+            [self zf_TakePhotoAction];
+            break;
+        case ZFClickTypeCancel://取消照片
+            if(self.isTake){
+                [self zf_cancel];
+            }
+            break;
+        case ZFClickTypeSave://保存照片
+            if (self.isTake) {
+                [self zf_savePhoto];
+            }
+            break;
+        default:
+            break;
+    }
+
+
+}
+
 
 #pragma mark private method
 - (void)zf_initAVCaptureSession{

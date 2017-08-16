@@ -43,7 +43,18 @@ typedef NS_ENUM(NSInteger,ZFTransitionType){
     ZFTransitionTypeCameraDismess,//相机dismess动画
 };
 
-
+/** 点击类型 */
+typedef NS_ENUM(NSInteger,ZFClickType){
+    ZFClickTypeBack = 0,//点击返回/取消
+    ZFClickTypeTitle,//点击标题
+    ZFClickTypeNext,//点击下一步
+    ZFClickTypeTakePhoto,//点击拍照
+    ZFClickTypeCancel,//取消选择照片
+    ZFClickTypeSave,//保存照片
+    ZFClickTypeFlash,//点击闪光灯
+    ZFClickTypeChangeCamera,//点击却换摄像头
+    
+};
 
 
 

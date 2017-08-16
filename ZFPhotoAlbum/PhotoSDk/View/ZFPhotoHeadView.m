@@ -9,21 +9,15 @@
 #import "ZFPhotoHeadView.h"
 #import "ZFPhotoTools.h"
 #import "ZFPhotoAlbum.h"
-@interface ZFPhotoHeadView()
-@property(strong,nonatomic)ZFTitleView *titleBtn;
-@property(strong,nonatomic)UIButton *chooseBtn;
+
+@interface PhotoNavigationBar ()
+@property(strong,nonatomic)UIButton *nextBtn;
+@property(assign,nonatomic)ZFClickType type;
+@property(copy,nonatomic)ClickTypeBlock clickTypeBlock;
 @end
-@implementation ZFPhotoHeadView
+@implementation PhotoNavigationBar
 
--(instancetype)initWithFrame:(CGRect)frame{
-    if (self = [super initWithFrame:frame]) {
-        
-        [self setUI];
-    }
-    return self;
-}
-
--(void)setUI{
+-(void)setNavigationItem:(UINavigationItem *)item{
     UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [backBtn setTitle:NSLocalizedString(@"取消", nil) forState:UIControlStateNormal];
     [backBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
@@ -32,136 +26,149 @@
     
     [backBtn setImage:[ZFPhotoTools zf_getPhotoWithImgName:@"camera_edit_cross.png"] forState:UIControlStateNormal];
     [backBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 1, 0, 0)];
+
     
-    self.titleBtn = [[ZFTitleView alloc] initWithFrame:CGRectMake(0, 0, 90, 30)];
-    self.titleBtn.title = NSLocalizedString(@"全部相册", nil);
+    self.nextBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.nextBtn setTitle:NSLocalizedString(@"下一步", nil) forState:UIControlStateNormal];
+    [self.nextBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+    self.nextBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
+    self.nextBtn.titleLabel.font = [UIFont systemFontOfSize:15];
+    self.nextBtn.frame = CGRectMake(0, 0, 80, 25);
+    self.nextBtn.layer.masksToBounds = YES;
+    self.nextBtn.layer.cornerRadius = 3;
+    self.nextBtn.userInteractionEnabled = NO;
+    [self.nextBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 10, 0, 10)];
     
-    
-    self.chooseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.chooseBtn setTitle:NSLocalizedString(@"下一步", nil) forState:UIControlStateNormal];
-    [self.chooseBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    self.chooseBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
-    self.chooseBtn.titleLabel.font = [UIFont systemFontOfSize:15];
-    self.chooseBtn.frame = CGRectMake(0, 0, 80, 25);
-    self.chooseBtn.layer.masksToBounds = YES;
-    self.chooseBtn.layer.cornerRadius = 3;
-    self.chooseBtn.userInteractionEnabled = NO;
-    [self.chooseBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 10, 0, 10)];
-    
-    
-    UINavigationItem *item = [[UINavigationItem alloc] init];
+   
     item.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backBtn];
-    item.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.chooseBtn];
-    item.titleView = self.titleBtn;
-    
-    [self pushNavigationItem:item animated:YES];
+    item.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.nextBtn];
+//    [self pushNavigationItem:item animated:YES];
     
     [backBtn addTarget:self action:@selector(clickBtn:) forControlEvents:UIControlEventTouchUpInside];
-    [self.chooseBtn addTarget:self action:@selector(clickBtn:) forControlEvents:UIControlEventTouchUpInside];
-    [_titleBtn addTarget:self action:@selector(clickBtn:) forControlEvents:UIControlEventTouchUpInside];
+    [self.nextBtn addTarget:self action:@selector(clickBtn:) forControlEvents:UIControlEventTouchUpInside];
     backBtn.tag = 300;
-    self.chooseBtn.tag = 301;
-    _titleBtn.tag = 302;
-}
+    self.nextBtn.tag = 301;
 
+}
 -(void)clickBtn:(UIButton *)btn{
-    switch (btn.tag - 300) {
-        case 0:
-            if (self.cancelBlock) {
-                self.cancelBlock();
-            }
-            break;
-        case 1:
-            if (self.chooseBlock) {
-                self.chooseBlock();
-            }
-            break;
-        case 2:
-            [self.titleBtn zfScoll];
-            if (self.titleBlock) {
-                self.titleBlock();
-            }
-            break;
-        default:
-            break;
+    if (btn.tag == 300) {
+        self.type = ZFClickTypeBack;
+    }else if (btn.tag == 301){
+        self.type = ZFClickTypeNext;
+    }else if (btn.tag == 302){
+        self.type = ZFClickTypeTitle;
+    }else if (btn.tag == 310) {
+        self.type = ZFClickTypeBack;
+    }else if (btn.tag == 311){
+        self.type = ZFClickTypeFlash;
+    }else if (btn.tag == 312){
+        self.type = ZFClickTypeChangeCamera;
+    }
+    if (self.clickTypeBlock) {
+        self.clickTypeBlock(self.type,btn);
     }
 }
 
 -(void)setTitle:(NSString *)title{
-    _title = title;
+    if (_title != title) {
+        _title = title;
+    }
+}
+-(void)setCount:(NSInteger)count{
+    _count = count;
+    if (count == 0) {
+        self.nextBtn.userInteractionEnabled = NO;
+        [self.nextBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
+        [self.nextBtn setTitle:@"下一步" forState:UIControlStateNormal];
+        self.nextBtn.backgroundColor = [UIColor clearColor];
+        self.nextBtn.titleLabel.font = [UIFont systemFontOfSize:15];
+    }else{
+        self.nextBtn.userInteractionEnabled = YES;
+        [self.nextBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+        [self.nextBtn setTitle:[NSString stringWithFormat:@"下一步(%ld)",count] forState:UIControlStateNormal];
+        self.nextBtn.backgroundColor = [UIColor orangeColor];
+        self.nextBtn.titleLabel.font = [UIFont systemFontOfSize:13];
+    }
+}
+/** 获取点击类型 */
+-(void)setDidClickWithType:(ClickTypeBlock)clickBlock{
+    self.clickTypeBlock = clickBlock;
+}
+
+@end
+
+/** 相册ZFPhotoHeadView */
+@interface ZFPhotoHeadView()
+@property(strong,nonatomic)ZFTitleView *titleBtn;
+
+@end
+@implementation ZFPhotoHeadView
+
+-(instancetype)initWithFrame:(CGRect)frame{
+    if (self = [super initWithFrame:frame]) {
+        [self setUI];
+    }
+    return self;
+}
+
+-(void)setUI{
+    
+    self.titleBtn = [[ZFTitleView alloc] initWithFrame:CGRectMake(0, 0, 90, 30)];
+    self.titleBtn.title = NSLocalizedString(@"全部相册", nil);
+    UINavigationItem *item = [[UINavigationItem alloc] init];
+    [self setNavigationItem:item];
+    item.titleView = self.titleBtn;
+    [self pushNavigationItem:item animated:YES];
+
+    [_titleBtn addTarget:self action:@selector(clickBtn:) forControlEvents:UIControlEventTouchUpInside];
+    _titleBtn.tag = 302;
+}
+
+-(void)setTitle:(NSString *)title{
+    [super setTitle:title];
     self.titleBtn.title = title;
 }
 -(void)zfScoll{
     [self.titleBtn zfScoll];
 }
 
--(void)setCount:(NSInteger)count{
-    _count = count;
-    if (count == 0) {
-        self.chooseBtn.userInteractionEnabled = NO;
-        [self.chooseBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        [self.chooseBtn setTitle:@"下一步" forState:UIControlStateNormal];
-        self.chooseBtn.backgroundColor = [UIColor clearColor];
-        self.chooseBtn.titleLabel.font = [UIFont systemFontOfSize:15];
-    }else{
-        self.chooseBtn.userInteractionEnabled = YES;
-        [self.chooseBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [self.chooseBtn setTitle:[NSString stringWithFormat:@"下一步(%ld)",count] forState:UIControlStateNormal];
-        self.chooseBtn.backgroundColor = [UIColor orangeColor];
-        self.chooseBtn.titleLabel.font = [UIFont systemFontOfSize:13];
-    }
-    
-}
-
-
 @end
 
-
-@interface ZFTitleView ()
-@property(strong,nonatomic)UILabel *label;
-@property(strong,nonatomic)UIImageView *imageV;
+/** 图片浏览头视图 */
+@interface ZFBrowHeadViewBar()
+@property(strong,nonatomic)UILabel *titleLabel;
 @end
-@implementation ZFTitleView
 
+@implementation ZFBrowHeadViewBar
 -(instancetype)initWithFrame:(CGRect)frame{
-    if (self= [super initWithFrame:frame] ) {
+    if (self = [super initWithFrame:frame]) {
         [self setUI];
     }
     return self;
 }
--(void)setUI{
 
-    self.label = [UILabel new];
-    self.label.textColor = [UIColor blackColor];
-    self.label.font = [UIFont systemFontOfSize:15];
-    self.label.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:self.label];
+-(void)setUI{
     
-    self.imageV = [UIImageView new];
-    self.imageV.image = [ZFPhotoTools zf_getPhotoWithImgName:@"common_icon_arrow.png"];
-    self.imageV.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:self.imageV];
+    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 30)];
+    self.titleLabel.font = [UIFont systemFontOfSize:16];
+    self.titleLabel.textColor = [UIColor blackColor];
+    self.titleLabel.textAlignment = NSTextAlignmentCenter;
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-2-[_label]-5-[_imageV]-2-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_label,_imageV)]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:_label attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:_imageV attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
+    UINavigationItem *item = [[UINavigationItem alloc] init];
+    [self setNavigationItem:item];
+    item.titleView = self.titleLabel;
+    [self pushNavigationItem:item animated:YES];
 }
 
 -(void)setTitle:(NSString *)title{
-    _title = title;
-    _label.text = title;
+    [super setTitle:title];
+    self.titleLabel.text = title;
+    [self.titleLabel sizeToFit];
 }
--(void)zfScoll{
-    __weak ZFTitleView *ws = self;
-    [UIView animateWithDuration:0.3 animations:^{
-        ws.imageV.transform = CGAffineTransformRotate(ws.imageV.transform, M_PI);
-    }];
-}
-
-
 
 @end
 
+/** 相机NaviBar */
 @interface ZFCamareHeadView()
 @property(strong,nonatomic)UIButton *titleBtn;
 @end
@@ -174,7 +181,6 @@
     }
     return self;
 }
-
 -(void)setUI{
     UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
     [backBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
@@ -221,35 +227,18 @@
     
 }
 
--(void)clickBtn:(UIButton *)btn{
-    switch (btn.tag - 310) {
-        case 0:
-            if (self.cancelBlock) {
-                self.cancelBlock();
-            }
-            break;
-        case 1:
-            if (self.flashBlock) {
-                self.flashBlock(btn);
-            }
-            break;
-        case 2:
-            if (self.changeBlock) {
-                self.changeBlock();
-            }
-            break;
-        default:
-            break;
-    }
-}
+
 
 @end
+
 
 
 @interface ZFTakePhotoHeadView()
 @property(strong,nonatomic)UIButton *takePhotoBtn;
 @property(strong,nonatomic)UIButton *cancelBtn;
 @property(strong,nonatomic)UIButton *chooseBtn;
+@property(assign,nonatomic)ZFClickType type;
+@property(copy,nonatomic)ClickTypeBlock clickTypeBlock;
 @end
 @implementation ZFTakePhotoHeadView
 
@@ -296,124 +285,74 @@
 
 -(void)clickBtn:(UIButton *)btn{
     BOOL istake = NO;
-    switch (btn.tag - 320) {
-        case 0:
-            if(self.cancelBlock){
-                self.cancelBlock();
-            }
-            break;
-        case 1:
-            if (self.takePhotoBlock) {
-                self.takePhotoBlock();
-            }
-            istake = YES;
-            break;
-        case 2:
-            if(self.chooseBlock){
-                self.chooseBlock();
-            }
-            break;
-            
-        default:
-            break;
+    if (btn.tag == 320) {
+        self.type = ZFClickTypeCancel;
+    }else if (btn.tag == 321){
+        self.type = ZFClickTypeTakePhoto;
+        istake = YES;
+    }else if (btn.tag == 322){
+        self.type = ZFClickTypeSave;
     }
+    if (self.clickTypeBlock) {
+        self.clickTypeBlock(self.type,btn);
+    }    
     self.cancelBtn.hidden = self.chooseBtn.hidden = !istake;
     self.takePhotoBtn.hidden = istake;
 }
 
+/** 获取点击类型 */
+-(void)setDidClickWithType:(ClickTypeBlock)clickBlock{
+    self.clickTypeBlock = clickBlock;
+}
+
 @end
 
-
-
-@interface ZFBrowHeadViewBar()
-@property(strong,nonatomic)UILabel *titleLabel;
-@property(strong,nonatomic)UIButton *chooseBtn;
+@interface ZFTitleView ()
+@property(strong,nonatomic)UILabel *label;
+@property(strong,nonatomic)UIImageView *imageV;
 @end
+@implementation ZFTitleView
 
-@implementation ZFBrowHeadViewBar
 -(instancetype)initWithFrame:(CGRect)frame{
-    if (self = [super initWithFrame:frame]) {
+    if (self= [super initWithFrame:frame] ) {
         [self setUI];
     }
     return self;
 }
-
 -(void)setUI{
-    UIButton *backBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [backBtn setTitle:NSLocalizedString(@"取消", nil) forState:UIControlStateNormal];
-    [backBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    backBtn.titleLabel.font = [UIFont systemFontOfSize:15];
-    backBtn.frame = CGRectMake(0, 0, 70, 30);
     
-    [backBtn setImage:[ZFPhotoTools zf_getPhotoWithImgName:@"camera_edit_cross.png"] forState:UIControlStateNormal];
-    [backBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 1, 0, 0)];
+    self.label = [UILabel new];
+    self.label.textColor = [UIColor blackColor];
+    self.label.font = [UIFont systemFontOfSize:15];
+    self.label.textAlignment = NSTextAlignmentRight;
+    self.label.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:self.label];
     
-    self.titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 100, 30)];
-    self.titleLabel.font = [UIFont systemFontOfSize:16];
-    self.titleLabel.textColor = [UIColor blackColor];
-    self.titleLabel.textAlignment = NSTextAlignmentCenter;
+    self.imageV = [UIImageView new];
+    self.imageV.image = [ZFPhotoTools zf_getPhotoWithImgName:@"common_icon_arrow.png"];
+    self.imageV.translatesAutoresizingMaskIntoConstraints = NO;
+    [self addSubview:self.imageV];
     
-    self.chooseBtn = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.chooseBtn setTitle:NSLocalizedString(@"下一步", nil) forState:UIControlStateNormal];
-    [self.chooseBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-    self.chooseBtn.titleLabel.textAlignment = NSTextAlignmentCenter;
-    self.chooseBtn.titleLabel.font = [UIFont systemFontOfSize:15];
-    self.chooseBtn.frame = CGRectMake(0, 0, 80, 25);
-    self.chooseBtn.layer.masksToBounds = YES;
-    self.chooseBtn.layer.cornerRadius = 3;
-    self.chooseBtn.userInteractionEnabled = NO;
-    [self.chooseBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 10, 0, 10)];
-    
-    UINavigationItem *item = [[UINavigationItem alloc] init];
-    item.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backBtn];
-    item.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.chooseBtn];
-    item.titleView = self.titleLabel;
-    
-    [self pushNavigationItem:item animated:YES];
-    
-    [backBtn addTarget:self action:@selector(clickBtn:) forControlEvents:UIControlEventTouchUpInside];
-    [self.chooseBtn addTarget:self action:@selector(clickBtn:) forControlEvents:UIControlEventTouchUpInside];
-    backBtn.tag = 340;
-    self.chooseBtn.tag = 341;
-}
-
--(void)clickBtn:(UIButton *)btn{
-    switch (btn.tag - 340) {
-        case 0:
-            if (self.cancelBlock) {
-                self.cancelBlock();
-            }
-            break;
-        case 1:
-            if (self.chooseBlock) {
-                self.chooseBlock();
-            }
-            break;
-        default:
-            break;
-    }
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-2-[_label]-5-[_imageV]-2-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_label,_imageV)]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:_label attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
+    [self addConstraint:[NSLayoutConstraint constraintWithItem:_imageV attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
 }
 
 -(void)setTitle:(NSString *)title{
-    self.titleLabel.text = title;
-    [self.titleLabel sizeToFit];
+    _title = title;
+    _label.text = title;
+}
+-(void)zfScoll{
+    __weak ZFTitleView *ws = self;
+    [UIView animateWithDuration:0.3 animations:^{
+        ws.imageV.transform = CGAffineTransformRotate(ws.imageV.transform, M_PI);
+    }];
 }
 
--(void)setCount:(NSInteger)count{
-    _count = count;
-    if (count == 0) {
-        self.chooseBtn.userInteractionEnabled = NO;
-        [self.chooseBtn setTitleColor:[UIColor grayColor] forState:UIControlStateNormal];
-        [self.chooseBtn setTitle:@"下一步" forState:UIControlStateNormal];
-        self.chooseBtn.backgroundColor = [UIColor clearColor];
-        self.chooseBtn.titleLabel.font = [UIFont systemFontOfSize:15];
-    }else{
-        self.chooseBtn.userInteractionEnabled = YES;
-        [self.chooseBtn setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
-        [self.chooseBtn setTitle:[NSString stringWithFormat:@"下一步(%ld)",count] forState:UIControlStateNormal];
-        self.chooseBtn.backgroundColor = [UIColor orangeColor];
-        self.chooseBtn.titleLabel.font = [UIFont systemFontOfSize:13];
-    }
-    
-}
+
+
 @end
+
+
+
+

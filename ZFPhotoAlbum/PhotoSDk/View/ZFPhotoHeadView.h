@@ -7,55 +7,49 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ZFAlbumConfig.h"
 @class ZFCamareHeadView;
 @class ZFTakePhotoHeadView;
 @class ZFBrowHeadViewBar;
 @class ZFTitleView;
 
-typedef void(^CancelBlock)();
-typedef void(^ChooseBlock)();
-typedef void(^TitleBlock)();
-typedef void(^FlashBlock)(UIButton *flashBtn);
-typedef void(^ChangeBlock)();
+typedef void(^ClickTypeBlock)(ZFClickType type,UIButton *btn);
 
-//相册
-@interface ZFPhotoHeadView : UINavigationBar
-@property(copy,nonatomic)NSString *title;
+@interface PhotoNavigationBar : UINavigationBar
 @property(assign,nonatomic)NSInteger count;
--(void)zfScoll;
-@property(copy,nonatomic)CancelBlock cancelBlock;
-@property(copy,nonatomic)ChooseBlock chooseBlock;
-@property(copy,nonatomic)TitleBlock titleBlock;
+@property(copy,nonatomic)NSString *title;
+-(void)setNavigationItem:(UINavigationItem *)item;
+@property(assign,nonatomic,readonly)ZFClickType type;
+/** 获取点击类型 */
+-(void)setDidClickWithType:(ClickTypeBlock)clickBlock;
 @end
 
+/** 相册ZFPhotoHeadView */
+@interface ZFPhotoHeadView : PhotoNavigationBar
+-(void)zfScoll;
+@end
+
+/** 图片浏览头视图 */
+@interface ZFBrowHeadViewBar : PhotoNavigationBar
+
+@end
+/** 相机NaviBar */
+@interface ZFCamareHeadView : PhotoNavigationBar
+
+@end
+
+/** 相机拍照 */
+@interface ZFTakePhotoHeadView : UIView
+/** 获取点击类型 */
+-(void)setDidClickWithType:(ClickTypeBlock)clickBlock;
+@end
+
+/** titleView */
 @interface ZFTitleView : UIButton
 @property(copy,nonatomic)NSString *title;
 -(void)zfScoll;
 @end
 
-/** 相机NaviBar */
-@interface ZFCamareHeadView : UINavigationBar
-@property(copy,nonatomic)CancelBlock cancelBlock;
-@property(copy,nonatomic)ChangeBlock changeBlock;
-@property(copy,nonatomic)FlashBlock flashBlock;
-@end
-
-/** 相机拍照 */
-@interface ZFTakePhotoHeadView : UIView
-@property(copy,nonatomic)void(^takePhotoBlock)();
-@property(copy,nonatomic)CancelBlock cancelBlock;
-@property(copy,nonatomic)ChooseBlock chooseBlock;
-@end
-
-
-/** 图片浏览头视图 */
-@interface ZFBrowHeadViewBar : UINavigationBar
-
-@property(copy,nonatomic)NSString *title;
-@property(copy,nonatomic)CancelBlock cancelBlock;
-@property(copy,nonatomic)ChooseBlock chooseBlock;
-@property(assign,nonatomic)NSInteger count;
-@end
 
 
 

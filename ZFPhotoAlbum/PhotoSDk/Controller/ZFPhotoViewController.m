@@ -18,7 +18,7 @@
 #import "ZFPhotoModel.h"
 #import "ZFAlbumModel.h"
 
-//http://blog.csdn.net/jeffasd/article/details/50465244
+
 @interface ZFPhotoViewController ()<UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,UINavigationControllerDelegate, UIImagePickerControllerDelegate,ZFCameraViewDelegate,PHPhotoLibraryChangeObserver>
 @property(strong,nonatomic)UICollectionView *collectionView;
 @property(strong,nonatomic)ZFCameraViewController *camareViewController;
@@ -96,29 +96,30 @@
    // [self registerForPreviewingWithDelegate:self sourceView:self.collectionView];
     
     
-    //////------block --------
-    __weak ZFPhotoViewController *ws = self;
-    
-    //点击取消
-    self.photoHeadView.cancelBlock = ^(){
-        [ws zf_dismess];
-    };
-    //点击下一步
-    self.photoHeadView.chooseBlock = ^(){
-        if (ws.didSelectPhotosBlock) {
-            ws.didSelectPhotosBlock(ws.photoManager.selectedPhotos);
-        }else{
-            if ([ws.delegate respondsToSelector:@selector(photoPickerViewController:didSelectPhotos:)]) {
-                [ws.delegate photoPickerViewController:ws didSelectPhotos:ws.photoManager.selectedPhotos];
-            }
+   WeakSelf(ws);
+    [self.photoHeadView setDidClickWithType:^(ZFClickType type, UIButton *btn) {
+        switch (type) {
+            case ZFClickTypeBack:
+                [ws zf_dismess];
+                break;
+            case ZFClickTypeNext:{
+                if (ws.didSelectPhotosBlock) {
+                    ws.didSelectPhotosBlock(ws.photoManager.selectedPhotos);
+                }else{
+                    if ([ws.delegate respondsToSelector:@selector(photoPickerViewController:didSelectPhotos:)]) {
+                        [ws.delegate photoPickerViewController:ws didSelectPhotos:ws.photoManager.selectedPhotos];
+                    }
+                }
+                [ws dismissViewControllerAnimated:YES completion:NULL];
+            }break;
+                case ZFClickTypeTitle:
+                [ws zf_showPhotoViewController];
+                break;
+            default:
+                break;
         }
-        [ws dismissViewControllerAnimated:YES completion:NULL];
-    };
-    
-    //点击标题
-    self.photoHeadView.titleBlock = ^(){
-        [ws zf_showPhotoViewController];
-    };
+        
+    }];
     
     ///-------布局
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_photoHeadView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_photoHeadView)]];

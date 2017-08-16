@@ -62,13 +62,10 @@
     layout.minimumLineSpacing = 20;
     layout.minimumInteritemSpacing = 0;
     layout.sectionInset = UIEdgeInsetsMake(0, 10, 0, 10);
-<<<<<<< HEAD
-//    layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;    
-    self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(-10, kNavigationHeight, kScreenWidth + 20, kScreenHeight - 64)collectionViewLayout:layout];
-=======
+
     layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
->>>>>>> 6451d28eabb4cc523051153dc7ab9d3c263aa43a
+
     self.collectionView.translatesAutoresizingMaskIntoConstraints = NO;
     self.collectionView.delegate = self;
     self.collectionView.dataSource = self;
@@ -95,18 +92,23 @@
    
     
     //-----
-    __weak ZFBrowsePhotoViewController *ws = self;
-    self.browHeadViewBar.cancelBlock = ^{
-//        if (ws.cancelBrowBlock) {
-//            ws.cancelBrowBlock(ws.lastIndexPath);
-//        }
-        [ws.navigationController popViewControllerAnimated:YES];
-    };
-    self.browHeadViewBar.chooseBlock = ^{
+    WeakSelf(ws);
+    [self.browHeadViewBar setDidClickWithType:^(ZFClickType type, UIButton *btn) {
+        switch (type) {
+            case ZFClickTypeBack:
+                [ws.navigationController popViewControllerAnimated:YES];
+                break;
+            case ZFClickTypeNext:{
+               
+            }break;
+
+            default:
+                break;
+        }
         
-    };
+    }];
+
     self.browHeadViewBar.title = [NSString stringWithFormat:@"%ld/%ld",self.currentIndex,self.photoItems.count];
-    
     
     ///-------布局 使用布局 不知道为什么使用3Dtouch 会报错 暂时换成frame 之后再看看
     [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_selectBtn]-20-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_selectBtn)]];
@@ -125,7 +127,6 @@
 
     ZFBrowCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([ZFBrowCollectionCell class]) forIndexPath:indexPath];
     cell.model = self.photoItems[indexPath.item];
-    cell.backgroundColor = [UIColor purpleColor];
     return cell;
     
 }

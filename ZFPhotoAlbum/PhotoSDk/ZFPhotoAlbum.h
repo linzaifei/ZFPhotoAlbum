@@ -10,7 +10,8 @@
 #define ZFPhotoAlbum_h
 
 static NSString *ZFPopDismessNotfcation = @"ZFPopDismessNotfcation";
-
+//弱引用
+#define WeakSelf(ws)  __weak __typeof(&*self)ws = self;
 #define kScreenHeight   [UIScreen mainScreen].bounds.size.height
 #define kScreenWidth    [UIScreen mainScreen].bounds.size.width
 #define kNavigationHeight 64
