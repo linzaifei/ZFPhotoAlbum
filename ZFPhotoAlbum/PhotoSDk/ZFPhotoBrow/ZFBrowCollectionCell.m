@@ -9,14 +9,14 @@
 #import "ZFBrowCollectionCell.h"
 #import <Photos/Photos.h>
 #import <PhotosUI/PhotosUI.h>
-#import "ZFBtn.h"
 #import "ZFPhotoModel.h"
 #import "ZFPhotoTools.h"
 
 @interface ZFBrowCollectionCell ()
-@property(strong,nonatomic)ZFBtn *selectBtn;
+
 @property(strong,nonatomic)PHAsset *asset;
 @property (assign, nonatomic) PHImageRequestID requestID;
+@property (assign, nonatomic) PHImageRequestID heightRequestId;
 @end
 
 @implementation ZFBrowCollectionCell
@@ -33,24 +33,39 @@
     _photoScrollView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:_photoScrollView];
 
-    self.selectBtn = [ZFBtn new];
-    self.selectBtn.translatesAutoresizingMaskIntoConstraints = NO;
-    self.selectBtn.frame = CGRectMake(0, 0, 60, 30);
-    [self.selectBtn setImage:[UIImage imageNamed:[@"ZFPhotoBundle.bundle" stringByAppendingPathComponent:@"Asset_checked_no.png"]] forState:UIControlStateNormal];
-    [self.selectBtn setImage:[UIImage imageNamed:[@"ZFPhotoBundle.bundle" stringByAppendingPathComponent:@"Asset_checked.png"]] forState:UIControlStateSelected];
-    [self.selectBtn addTarget:self action:@selector(clickCollect:) forControlEvents:UIControlEventTouchUpInside];
-    [self.contentView addSubview:self.selectBtn];
 
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_selectBtn]-5-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_selectBtn)]];
-    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[_selectBtn]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_selectBtn)]];
-    
-    
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_photoScrollView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_photoScrollView)]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[_photoScrollView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_photoScrollView)]];
     
+
+}
+
+/*设置高清图片*/
+-(void)setHightImg{
+    [[PHImageManager defaultManager] cancelImageRequest:self.requestID];
+    CGFloat width = self.frame.size.width;
+    CGFloat height = self.frame.size.height;
+    CGFloat imgWidth = self.model.imageSize.width;
+    CGFloat imgHeight = self.model.imageSize.height;
+    PHImageRequestID requestID;
+    __weak typeof(self) weakSelf = self;
     
-
-
+    CGSize size = CGSizeZero;
+    if (imgHeight > imgWidth / 9 * 17) {
+        size = CGSizeMake(width, height);
+    }else {
+        size = CGSizeMake(_model.endImageSize.width * 2.0, _model.endImageSize.height * 2.0);
+    }
+    
+    requestID =[ZFPhotoTools zf_getHighQualityFromPHAsset:self.model.asset WithDeliveryMode:PHImageRequestOptionsDeliveryModeHighQualityFormat size:size completion:^(UIImage *image, NSDictionary *info) {
+        weakSelf.photoScrollView.photoImgView.image = image;
+        
+    } Progress:^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
+    }];
+    if (self.heightRequestId != requestID) {
+        [[PHImageManager defaultManager] cancelImageRequest:self.heightRequestId];
+        self.heightRequestId = requestID;
+    }
 }
 
 -(void)setModel:(ZFPhotoModel *)model{
@@ -63,94 +78,33 @@
     CGFloat w;
     CGFloat h;
     
-    
+    //等比例
     imgHeight = width / imgWidth * imgHeight;
     if (imgHeight > height) {
         w = height / model.imageSize.height * imgWidth;
         h = height;
-//        self.scrollView.maximumZoomScale = width / w + 0.5;
     }else {
         w = width;
         h = imgHeight;
-//        self.scrollView.maximumZoomScale = 2.5;
     }
-//    _imageView.frame = CGRectMake(0, 0, w, h);
-//    _imageView.center = CGPointMake(width / 2, height / 2);
-
-    if (model.previewPhoto) {
-        self.photoScrollView.photoImgView.image = model.previewPhoto;
+    
+    __weak typeof(self) weakSelf = self;
+    CGSize size = CGSizeZero;
+    if (imgHeight > imgWidth / 9 * 17) {
+        size = CGSizeMake(width * 0.5, height * 0.5);
     }else {
-    
-        __weak typeof(self) weakSelf = self;
-        PHImageRequestID requestID;
-        if (imgHeight > imgWidth / 9 * 17) {
-            
-            requestID =[ZFPhotoTools zf_getPhotoFromPHAsset:model.asset size:CGSizeMake(width * 0.5, height * 0.5) completion:^(UIImage *image, NSDictionary *info) {
-                weakSelf.photoScrollView.photoImgView.image = image;
-            }];
-            
-        }else {
-            
-            requestID =[ZFPhotoTools zf_getPhotoFromPHAsset:model.asset size:CGSizeMake(model.endImageSize.width * 0.8, model.endImageSize.height * 0.8) completion:^(UIImage *image, NSDictionary *info) {
-                weakSelf.photoScrollView.photoImgView.image = image;
-            }];
-            
-        }
-        if (self.requestID != requestID) {
-            [[PHImageManager defaultManager] cancelImageRequest:self.requestID];
-        }
-        self.requestID = requestID;
+        size = CGSizeMake(model.endImageSize.width * 0.8, model.endImageSize.height * 0.8);
     }
-}
-
-
-//设置数据
--(void)zf_setAssest:(id)data{
-    if ([data isKindOfClass:[PHAsset class]]) {
-        PHAsset *asset = (PHAsset *)data;
-        self.asset = asset;
-        __weak ZFBrowCollectionCell *ws = self;
-        //判断是不是live视图
-        if (asset.mediaSubtypes == PHAssetMediaSubtypePhotoLive) {
-            self.photoScrollView.photoImgView.hidden = YES;
-            PHLivePhotoRequestOptions *option = [[PHLivePhotoRequestOptions alloc] init];
-            option.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-            option.networkAccessAllowed = YES;
-            option.progressHandler = ^(double progress, NSError * _Nullable error, BOOL * _Nonnull stop, NSDictionary * _Nullable info) {
-                NSLog(@"%f",progress);
-            };
-            
-        
-        }else{
-
-            self.photoScrollView.photoImgView.hidden = NO;
-            PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
-            // 同步获得图片, 只会返回1张图片
-            options.synchronous = YES;
-            options.deliveryMode = PHImageRequestOptionsDeliveryModeHighQualityFormat;
-            [[PHImageManager defaultManager] requestImageForAsset:asset targetSize:CGSizeMake(300, 300) contentMode:PHImageContentModeDefault options:options resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-                if(result != nil){
-                    ws.photoScrollView.photoImgView.image = result;
-                }
-            }];
-        }
-    }else if([data isKindOfClass:[UIImage class]]){
-        _photoScrollView.photoImgView.image = data;
-    }else if([data isKindOfClass:[NSString class]]){
-        
-        
-    }
-}
-
--(void)setIsSelect:(BOOL)isSelect{
-    self.selectBtn.selected = isSelect;
+    PHImageRequestID requestID = [ZFPhotoTools zf_getPhotoFromPHAsset:model.asset size:size completion:^(UIImage *image, NSDictionary *info) {
+        weakSelf.photoScrollView.photoImgView.image = image;
+    }];
     
+    if (self.requestID != requestID) {
+        [[PHImageManager defaultManager] cancelImageRequest:self.requestID];
+    }
+    
+    self.requestID = requestID;
 }
-
--(void)clickCollect:(ZFBtn *)btn{
-
-}
-
 
 @end
 
