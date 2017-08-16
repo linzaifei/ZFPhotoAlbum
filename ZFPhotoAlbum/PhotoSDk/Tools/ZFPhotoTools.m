@@ -102,7 +102,7 @@
         }
     }];
 }
-+(int32_t)zf_getfetchPhotoWithAsset:(id)asset photoSize:(CGSize)photoSize completion:(void (^)(UIImage *img,NSDictionary *info,BOOL isDegraded))completion{
++(int32_t)zf_getfetchPhotoWithAsset:(id)asset photoSize:(CGSize)photoSize completion:(void (^)(UIImage *image,NSDictionary *info,BOOL isDegraded))completion{
 
     PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
     option.resizeMode = PHImageRequestOptionsResizeModeFast;
@@ -152,6 +152,47 @@
                     error(info);
                 }
             });
+        }
+    }];
+}
+
+/** 加载高清图片 显示加载提示 */
++(PHImageRequestID)zf_getHighQualityFromPHAsset:(PHAsset *)asset WithDeliveryMode:(PHImageRequestOptionsDeliveryMode)deliveryMode size:(CGSize)size completion:(void(^)(UIImage *image,NSDictionary *info))completion Progress:(void(^)(double progress,NSError * error, BOOL * stop, NSDictionary * info))progressCompletion{
+
+    PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
+    option.deliveryMode = deliveryMode;
+    option.resizeMode = PHImageRequestOptionsResizeModeFast;
+    
+    
+    return [[PHCachingImageManager defaultManager] requestImageForAsset:asset targetSize:size contentMode:PHImageContentModeAspectFill options:option resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
+        
+        BOOL downloadFinined = ![info objectForKey:PHImageErrorKey];
+        if (downloadFinined && completion && result) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completion(result,info);
+            });
+        }
+
+        if ([[info valueForKey:PHImageResultIsInCloudKey] boolValue] && !result) {
+           
+            PHImageRequestOptions *options = [[PHImageRequestOptions alloc] init];
+            options.progressHandler = ^(double progress, NSError *error, BOOL *stop, NSDictionary *info) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (progressCompletion) {
+                        progressCompletion(progress, error, stop, info);
+                    }
+                });
+            };
+            options.networkAccessAllowed = YES;
+            options.resizeMode = PHImageRequestOptionsResizeModeFast;
+            [[PHImageManager defaultManager] requestImageDataForAsset:asset options:options resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+                UIImage *resultImage = [UIImage imageWithData:imageData scale:0.1];
+                if (resultImage) {
+                    completion(resultImage,info);
+                }
+            }];
+
+        
         }
     }];
 }

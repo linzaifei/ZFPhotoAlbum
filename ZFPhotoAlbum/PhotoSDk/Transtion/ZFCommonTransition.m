@@ -204,19 +204,81 @@
 
 
 -(void)zf_popAnnimationTransition:(id <UIViewControllerContextTransitioning>)transitionContext{
-//    ZFViewController *toVC = [transitionContext viewControllerForKey: UITransitionContextFromViewControllerKey];
-//    ViewController *fromVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-//    UIView *containerView = transitionContext.containerView;
-//    
-//    //私有方法获取方法
-//    UICollectionView *collectionView = [fromVC valueForKey:@"collectionView"];
-//    ZFCollectionViewCell *cell = (ZFCollectionViewCell *)[collectionView cellForItemAtIndexPath:toVC.indexPath];
-//    
-//    //创建一个View的截图 把原来的view隐藏
-//    UIView *snapshotView = [toVC.showImageView snapshotViewAfterScreenUpdates:NO];
+    ZFBrowsePhotoViewController *fromVC = [transitionContext viewControllerForKey: UITransitionContextFromViewControllerKey];
+    ZFPhotoViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    UIView *containerView = transitionContext.containerView;
+
+    //私有方法获取方法
+    NSIndexPath *indexPath = [NSIndexPath indexPathForItem:fromVC.currentIndex inSection:0];
+    UICollectionView *fromCollectionView = [fromVC valueForKey:@"collectionView"];
+    ZFBrowCollectionCell *fromCell = (ZFBrowCollectionCell *)[fromCollectionView cellForItemAtIndexPath:indexPath];
+    
+    UIImageView *tempView = [[UIImageView alloc] initWithImage:fromCell.photoScrollView.photoImgView.image];
+    tempView.clipsToBounds = YES;
+    tempView.contentMode = UIViewContentModeScaleAspectFill;
+    
+    ZFPhotoModel *model = fromVC.photoItems[fromVC.currentIndex];
+
+    UICollectionView *toCollectionView = [toVC valueForKey:@"collectionView"];
+    ZFPhotoCollectionViewCell *toCell = (ZFPhotoCollectionViewCell *)[toCollectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:fromVC.currentIndex inSection:0]];
+    
+    NSLog(@"currentIndex == %ld",fromVC.currentIndex);
+    
+    if (!toCell) {
+//        if (model.currentAlbumIndex == toVC.albumModel.index) {
+            [toCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:fromVC.currentIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
+            [toCollectionView reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForItem:fromVC.currentIndex inSection:0]]];
+            toCell = (ZFPhotoCollectionViewCell *)[toCollectionView cellForItemAtIndexPath:[NSIndexPath indexPathForItem:fromVC.currentIndex inSection:0]];
+//        }
+    }
+    
+    
+    CGFloat height = [UIScreen mainScreen].bounds.size.height;
+//    UIView *containerView = [transitionContext containerView];
+    [containerView insertSubview:toVC.view atIndex:0];
+    [containerView addSubview:tempView];
+    
+    tempView.frame = CGRectMake(0, 0, model.endImageSize.width, model.endImageSize.height);
+    tempView.center = CGPointMake(containerView.frame.size.width / 2, (height - 64) / 2 + 64);
+    CGRect rect = [toCollectionView convertRect:toCell.frame toView:[UIApplication sharedApplication].keyWindow];
+    if (rect.origin.y < 64) {
+        [toCollectionView setContentOffset:CGPointMake(0, toCell.frame.origin.y - 65)];
+        rect = CGRectMake(toCell.frame.origin.x, 65, toCell.frame.size.width, toCell.frame.size.height);
+    }else if (rect.origin.y + rect.size.height > height) {
+        [toCollectionView setContentOffset:CGPointMake(0, toCell.frame.origin.y - height + rect.size.height)];
+        rect = CGRectMake(toCell.frame.origin.x, height  - toCell.frame.size.height, toCell.frame.size.width, toCell.frame.size.height);
+    }
+    
+    toCell.hidden = YES;
+    fromVC.view.hidden = YES;
+//    if (toVC.albumModel.index != model.currentAlbumIndex && toVC.isPreview) {
+        toCell.hidden = NO;
+        fromVC.view.hidden = NO;
+//    }
+    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+//        if (toVC.albumModel.index == model.currentAlbumIndex) {
+            tempView.frame = rect;
+//        }else {
+            fromVC.view.alpha = 0;
+//            tempView.alpha = 0;
+//        }
+    } completion:^(BOOL finished) {
+        toCell.hidden = NO;
+//        toVC.isPreview = NO;
+        [tempView removeFromSuperview];
+        [transitionContext completeTransition:YES];
+    }];
+
+
+    
+
+    //创建一个View的截图 把原来的view隐藏
+//    UIView *snapshotView = [cell.photoScrollView.photoImgView snapshotViewAfterScreenUpdates:NO];
 //    //获取这个假视图在toView上的位置
 //    //这边必须使用 toVC.sourceView  不能使用snapshotView 测试
-//    snapshotView.frame = [toVC.showImageView convertRect:toVC.showImageView.frame toView:containerView];
+
+//    snapshotView.frame = [cell.photoScrollView.photoImgView convertRect:toVC.view.frame toView:containerView];
+//    NSLog(@"%@",snapshotView);
 //    //设置控制器的位置
 //    //    toVC.view.frame = [transitionContext finalFrameForViewController:toVC];
 //    //    toVC.view.alpha = 0;

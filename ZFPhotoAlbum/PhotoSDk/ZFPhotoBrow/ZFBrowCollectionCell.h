@@ -16,14 +16,14 @@
 
 @interface ZFBrowCollectionCell : UICollectionViewCell
 
+/*设置高清图片*/
+-(void)setHightImg;
 @property(strong,nonatomic)ZFPhotoModel *model;
-
 //是否被点击
 @property(assign,nonatomic)BOOL isSelect;
-
 @property (nonatomic,strong)ZFPhotoScrollView *photoScrollView;
-
 @property (assign, nonatomic, readonly) PHImageRequestID requestID;
+@property (assign, nonatomic, readonly) PHImageRequestID heightRequestId;
 
 @end
 
