@@ -26,6 +26,10 @@
 @property (assign, nonatomic) NSInteger photoIndex;
 /** 当前相册下标 */
 //@property (assign, nonatomic) NSInteger currentAlbumIndex;
+
+/** 预览照片 */
+@property (strong, nonatomic) UIImage *previewPhoto;
+
 /** 视频时间 */
 @property (copy, nonatomic) NSString *videoTime;
 /** 视频下标 */

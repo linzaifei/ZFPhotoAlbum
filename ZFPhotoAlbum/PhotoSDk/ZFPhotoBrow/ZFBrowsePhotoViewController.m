@@ -38,39 +38,41 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
+    self.automaticallyAdjustsScrollViewInsets = NO;
     [self setUI];
 }
 
 -(void)setUI{
     
-    _browHeadViewBar = [[ZFBrowHeadViewBar alloc] init];
-    _browHeadViewBar.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.view addSubview:_browHeadViewBar];
-    _browHeadViewBar.count = self.photoManager.selectedPhotos.count;
+//    _browHeadViewBar = [[ZFBrowHeadViewBar alloc] init];
+//    _browHeadViewBar.translatesAutoresizingMaskIntoConstraints = NO;
+//    [self.view addSubview:_browHeadViewBar];
+//    _browHeadViewBar.count = self.photoManager.selectedPhotos.count;
     
     UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+
+    layout.itemSize = CGSizeMake(kScreenWidth, kScreenHeight - kNavigationHeight);
     layout.minimumLineSpacing = 20;
-     layout.itemSize = CGSizeMake(kScreenWidth, kNavigationHeight - 64);
+    layout.minimumInteritemSpacing = 0;
     layout.sectionInset = UIEdgeInsetsMake(0, 10, 0, 10);
-    layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    layout.minimumLineSpacing = MIN_Space;
-    
-    self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectZero collectionViewLayout:layout];
+//    layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;    
+    self.collectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(-10, kNavigationHeight, kScreenWidth + 20, kScreenHeight - 64)collectionViewLayout:layout];
     self.collectionView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.collectionView.backgroundColor = [UIColor purpleColor];
     self.collectionView.delegate = self;
     self.collectionView.dataSource = self;
-    //减速时的速率,快速减速()
-//    self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
+    self.collectionView.backgroundColor = [UIColor redColor];
+    //设置偏移量
+    self.collectionView.pagingEnabled = YES;
+    self.collectionView.showsVerticalScrollIndicator = NO;
+    self.collectionView.showsHorizontalScrollIndicator = NO;
+    self.collectionView.contentSize = CGSizeMake(self.photoItems.count * (kScreenWidth + 20), 0);
     [self.view addSubview:self.collectionView];
     [self.collectionView registerClass:[ZFBrowCollectionCell class] forCellWithReuseIdentifier:NSStringFromClass([ZFBrowCollectionCell class])];
+    [self.collectionView setContentOffset:CGPointMake(self.currentIndex * (kScreenWidth + 20), 0) animated:NO];
     
-    //设置偏移量
-    self.collectionView.contentOffset = CGPointMake( self.collectionView.frame.size.width * _currentIndex - _currentIndex * MIN_Space, 0);
     
-    ////-----
+    //-----
     __weak ZFBrowsePhotoViewController *ws = self;
-    
     self.browHeadViewBar.cancelBlock = ^{
         if (ws.cancelBrowBlock) {
             ws.cancelBrowBlock(ws.lastIndexPath);
@@ -82,11 +84,12 @@
     };
     self.browHeadViewBar.title = [NSString stringWithFormat:@"%ld/%ld",self.currentIndex,self.photoItems.count];
     
+    
     ///-------布局 使用布局 不知道为什么使用3Dtouch 会报错 暂时换成frame 之后再看看
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_browHeadViewBar]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_browHeadViewBar)]];
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_collectionView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_collectionView)]];
-
-    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[_browHeadViewBar(==64)]-0-[_collectionView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_browHeadViewBar,_collectionView)]];
+//    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_browHeadViewBar]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_browHeadViewBar)]];
+//    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-width-[_collectionView]-width-|" options:0 metrics:@{@"width":@(-10)} views:NSDictionaryOfVariableBindings(_collectionView)]];
+//
+//    [self.view addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[_browHeadViewBar(==64)]-0-[_collectionView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_browHeadViewBar,_collectionView)]];
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
@@ -97,9 +100,8 @@
 - (__kindof UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
 
     ZFBrowCollectionCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:NSStringFromClass([ZFBrowCollectionCell class]) forIndexPath:indexPath];
-    
-
-    
+    cell.model = self.photoItems[indexPath.item];
+    cell.backgroundColor = [UIColor purpleColor];
     return cell;
     
 }
@@ -111,8 +113,6 @@
     [photoCell.photoScrollView setZoomScale:1 animated:YES];
     self.lastIndexPath = indexPath;
 }
-
-
 
 -(void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset{
     NSInteger index = targetContentOffset->x / (kScreenWidth - 40);

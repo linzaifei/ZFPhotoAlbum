@@ -7,10 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Photos/Photos.h>
 @class ZFPhotoScrollView;
 @class ScrollLayout;
 @class PHLivePhotoView;
 @class ZFPhotoModel;
+
 
 @interface ZFBrowCollectionCell : UICollectionViewCell
 
@@ -20,6 +22,8 @@
 @property(assign,nonatomic)BOOL isSelect;
 
 @property (nonatomic,strong)ZFPhotoScrollView *photoScrollView;
+
+@property (assign, nonatomic, readonly) PHImageRequestID requestID;
 
 @end
 
