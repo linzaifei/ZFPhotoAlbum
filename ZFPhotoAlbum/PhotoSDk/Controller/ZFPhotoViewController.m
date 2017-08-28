@@ -36,16 +36,62 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self loadData];
     [self zf_setUI];
-
+    [self getAlumAuth];
     [self.photoManager addObserver:self forKeyPath:@"selectedPhotos" options:NSKeyValueObservingOptionNew context:nil];
     [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:YES];
+}
+
+/** 获取相册权限 */
+-(void)getAlumAuth{
+
+    if ([PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusAuthorized) {
+        [self loadData];
+    }else{
+    WeakSelf(ws)
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+        
+            if (status == PHAuthorizationStatusAuthorized) {
+                [ws loadData];
+               
+            }else{
+                [self zf_alert];
+            }
+        }];
+    }
+}
+
+-(void)zf_alert{
+    // 获取APP名称
+    NSDictionary *info = [[NSBundle mainBundle] infoDictionary];
+    NSString *appName  = [info objectForKey:@"CFBundleDisplayName"];
+    appName            = appName ? appName : [info objectForKey:@"CFBundleName"];
+    NSString *message  = [NSString stringWithFormat:@"请在系统设置中允许“%@”访问照片!", appName];
+    
+    UIAlertController *alertVC =[UIAlertController alertControllerWithTitle:NSLocalizedString(@"无法访问照片", nil) message:message preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *ok = [UIAlertAction actionWithTitle:@"去设置" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+//        NSURL *url = [NSURL URLWithString:@"prefs:root=Privacy&path=PHOTOS"];
+//        if ([[UIApplication sharedApplication] canOpenURL:url]) {
+//            [[UIApplication sharedApplication] openURL:url];
+//        }
+    }];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+        
+    }];
+    
+    [alertVC addAction:ok];
+    [alertVC addAction:cancel];
+    
+    [self presentViewController:alertVC animated:YES completion:NULL];
+
+
 }
 
 #pragma mark - 加载数据
