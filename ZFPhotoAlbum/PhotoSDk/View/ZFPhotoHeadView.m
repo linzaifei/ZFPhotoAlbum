@@ -10,6 +10,7 @@
 #import "ZFPhotoTools.h"
 #import "ZFPhotoAlbum.h"
 
+
 @interface PhotoNavigationBar ()
 @property(strong,nonatomic)UIButton *nextBtn;
 @property(assign,nonatomic)ZFClickType type;
@@ -39,10 +40,8 @@
     self.nextBtn.userInteractionEnabled = NO;
     [self.nextBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 10, 0, 10)];
     
-   
     item.leftBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:backBtn];
     item.rightBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:self.nextBtn];
-//    [self pushNavigationItem:item animated:YES];
     
     [backBtn addTarget:self action:@selector(clickBtn:) forControlEvents:UIControlEventTouchUpInside];
     [self.nextBtn addTarget:self action:@selector(clickBtn:) forControlEvents:UIControlEventTouchUpInside];
@@ -99,7 +98,7 @@
 
 /** 相册ZFPhotoHeadView */
 @interface ZFPhotoHeadView()
-@property(strong,nonatomic)ZFTitleView *titleBtn;
+@property(strong,nonatomic)UIButton *titleBtn;
 
 @end
 @implementation ZFPhotoHeadView
@@ -112,9 +111,13 @@
 }
 
 -(void)setUI{
-    
-    self.titleBtn = [[ZFTitleView alloc] initWithFrame:CGRectMake(0, 0, 90, 30)];
-    self.titleBtn.title = NSLocalizedString(@"全部相册", nil);
+    self.titleBtn = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.titleBtn setTitle:@"所有相册" forState:UIControlStateNormal];
+    [self.titleBtn setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    self.titleBtn.titleLabel.font = [UIFont systemFontOfSize:15];
+    [self.titleBtn setImage:[ZFPhotoTools zf_getPhotoWithImgName:@"common_icon_arrow.png"] forState:UIControlStateNormal];
+    [self.titleBtn sizeToFit];
+
     UINavigationItem *item = [[UINavigationItem alloc] init];
     [self setNavigationItem:item];
     item.titleView = self.titleBtn;
@@ -126,11 +129,18 @@
 
 -(void)setTitle:(NSString *)title{
     [super setTitle:title];
-    self.titleBtn.title = title;
+    [self.titleBtn setTitle:title forState:UIControlStateNormal];
+    [self.titleBtn sizeToFit];
+    self.titleBtn.titleEdgeInsets = UIEdgeInsetsMake(0, -self.titleBtn.imageView.frame.size.width - 10 / 2.0, 0, self.titleBtn.imageView.frame.size.width + 10 / 2.0);
+    self.titleBtn.imageEdgeInsets = UIEdgeInsetsMake(0, self.titleBtn.titleLabel.intrinsicContentSize.width + 10 / 2.0,0, -self.titleBtn.titleLabel.intrinsicContentSize.width -10 / 2.0);
 }
 -(void)zfScoll{
-    [self.titleBtn zfScoll];
+    WeakSelf(ws);
+    [UIView animateWithDuration:0.3 animations:^{
+        ws.titleBtn.imageView.transform = CGAffineTransformRotate(ws.titleBtn.imageView.transform, M_PI);
+    }];
 }
+
 
 @end
 
@@ -307,51 +317,11 @@
 
 @end
 
-@interface ZFTitleView ()
-@property(strong,nonatomic)UILabel *label;
-@property(strong,nonatomic)UIImageView *imageV;
-@end
-@implementation ZFTitleView
-
--(instancetype)initWithFrame:(CGRect)frame{
-    if (self= [super initWithFrame:frame] ) {
-        [self setUI];
-    }
-    return self;
-}
--(void)setUI{
-    
-    self.label = [UILabel new];
-    self.label.textColor = [UIColor blackColor];
-    self.label.font = [UIFont systemFontOfSize:15];
-    self.label.textAlignment = NSTextAlignmentRight;
-    self.label.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:self.label];
-    
-    self.imageV = [UIImageView new];
-    self.imageV.image = [ZFPhotoTools zf_getPhotoWithImgName:@"common_icon_arrow.png"];
-    self.imageV.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addSubview:self.imageV];
-    
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"|-2-[_label]-5-[_imageV]-2-|" options:0 metrics:nil views:NSDictionaryOfVariableBindings(_label,_imageV)]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:_label attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
-    [self addConstraint:[NSLayoutConstraint constraintWithItem:_imageV attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:self attribute:NSLayoutAttributeCenterY multiplier:1 constant:1]];
-}
-
--(void)setTitle:(NSString *)title{
-    _title = title;
-    _label.text = title;
-}
--(void)zfScoll{
-    __weak ZFTitleView *ws = self;
-    [UIView animateWithDuration:0.3 animations:^{
-        ws.imageV.transform = CGAffineTransformRotate(ws.imageV.transform, M_PI);
-    }];
-}
 
 
 
-@end
+
+
 
 
 

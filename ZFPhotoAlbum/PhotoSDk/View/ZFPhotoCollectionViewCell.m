@@ -23,7 +23,6 @@
 @property(strong,nonatomic)UILabel *liveLabel;
 @property(copy,nonatomic)ZFClickItemBlock clickBlock;
 
-
 @end
 
 @implementation ZFPhotoCollectionViewCell
@@ -135,17 +134,7 @@
 }
 
 #pragma mark - 布局
--(void)setSubviewLayout{
-//    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-0-[_livePhotoView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_livePhotoView)]];
-//    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-0-[_livePhotoView]-0-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_livePhotoView)]];
-    
-
-//    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-5-[_liveView(==52)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_liveView)]];
-//    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-8-[_liveView(==21)]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_liveView)]];
-    
-//    [self.liveView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[label]-2-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_liveLabel)]];
-//    [self.liveView addConstraint:[NSLayoutConstraint constraintWithItem:_liveLabel attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:_liveView attribute:NSLayoutAttributeCenterY multiplier:1 constant:0]];
-    
+-(void)setSubviewLayout{    
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:[_selectBtn]-5-|" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_selectBtn)]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[_selectBtn]" options:0 metrics:0 views:NSDictionaryOfVariableBindings(_selectBtn)]];
     

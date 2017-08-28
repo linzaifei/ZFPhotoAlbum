@@ -17,24 +17,18 @@
 @property(strong, nonatomic) PHAsset *asset;
 /** AVAsset */
 @property(strong, nonatomic) AVAsset *avAsset;
-
 /** 在相册里下标 */
 @property(assign, nonatomic) NSInteger albumListIndex;
 /** 是否被选中 */
 @property(assign, nonatomic) BOOL selected;
 /** 图片下标 */
 @property (assign, nonatomic) NSInteger photoIndex;
-/** 当前相册下标 */
-//@property (assign, nonatomic) NSInteger currentAlbumIndex;
-
 /** 预览照片 */
 @property (strong, nonatomic) UIImage *previewPhoto;
-
 /** 视频时间 */
 @property (copy, nonatomic) NSString *videoTime;
 /** 视频下标 */
 @property (assign, nonatomic) NSInteger videoIndex;
-
 /** 拍照小图 */
 @property (strong, nonatomic) UIImage *cameraPhoto;
 /** 图片宽高 */

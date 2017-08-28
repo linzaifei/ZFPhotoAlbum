@@ -23,6 +23,4 @@ typedef void(^CancelBrowBlock)(NSIndexPath *indexPath);
 @property(strong,nonatomic)NSArray *photoItems;//图片数组
 
 @property(strong,nonatomic)UIView *sourceView;//原始视图
-@property(copy,nonatomic)CancelBrowBlock cancelBrowBlock;//取消
-
 @end

@@ -45,7 +45,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-     [self.navigationController setNavigationBarHidden:YES animated:YES];
+    [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
 
 #pragma mark - 加载数据
@@ -175,6 +175,7 @@
         [[PHImageManager defaultManager] cancelImageRequest:zfCell.requestID];
     }
 }
+#pragma mark - 放大
 -(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     ZFPhotoModel *model = self.allObjs[indexPath.item];
     switch (model.type) {
@@ -198,10 +199,8 @@
         default:
             break;
     }
-    
-
-
 }
+#pragma mark - 相机
 - (void)goCameraViewController {
     if(![UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
         [RemindView showViewWithTitle:NSLocalizedString(@"此设备不支持相机!", nil) location:LocationTypeMIDDLE];
@@ -232,7 +231,7 @@
     }
 }
 
-#pragma mark -
+#pragma mark - 选中照片
 -(void)didClickSelectCell:(ZFPhotoCollectionViewCell *)selectCell Model:(ZFPhotoModel *)model IsSelect:(BOOL)isSelected{
     
     if (isSelected) {//选中
@@ -278,9 +277,7 @@
                 
             }
         }
-        
     }
-
 }
 
 

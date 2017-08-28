@@ -234,7 +234,6 @@
     
     
     CGFloat height = [UIScreen mainScreen].bounds.size.height;
-//    UIView *containerView = [transitionContext containerView];
     [containerView insertSubview:toVC.view atIndex:0];
     [containerView addSubview:tempView];
     
@@ -268,35 +267,6 @@
         [tempView removeFromSuperview];
         [transitionContext completeTransition:YES];
     }];
-
-
-    
-
-    //创建一个View的截图 把原来的view隐藏
-//    UIView *snapshotView = [cell.photoScrollView.photoImgView snapshotViewAfterScreenUpdates:NO];
-//    //获取这个假视图在toView上的位置
-//    //这边必须使用 toVC.sourceView  不能使用snapshotView 测试
-
-//    snapshotView.frame = [cell.photoScrollView.photoImgView convertRect:toVC.view.frame toView:containerView];
-//    NSLog(@"%@",snapshotView);
-//    //设置控制器的位置
-//    //    toVC.view.frame = [transitionContext finalFrameForViewController:toVC];
-//    //    toVC.view.alpha = 0;
-//    //添加到容器中
-//    [containerView addSubview:fromVC.view];
-//    [containerView addSubview:toVC.view];
-//    [containerView addSubview:snapshotView];
-//    //执行动画
-//    [UIView animateWithDuration:[self transitionDuration:transitionContext] delay:0.0 usingSpringWithDamping:0.5 initialSpringVelocity:0.9 options:UIViewAnimationOptionAllowUserInteraction | UIViewAnimationOptionCurveEaseOut animations:^{
-//        snapshotView.frame = [cell.imageView convertRect:cell.imageView.frame toView:containerView];
-//        toVC.view.alpha = 0;
-//    } completion:^(BOOL finished) {
-//        if (finished) {
-//            snapshotView.hidden = YES;
-//            //            toVC.showImageView.image = cell.imageView.image;
-//            [transitionContext completeTransition:YES];
-//        }
-//    }];
     
 }
 

@@ -56,6 +56,4 @@ typedef NS_ENUM(NSInteger,ZFClickType){
     
 };
 
-
-
 #endif /* ZFAlbumConfig_h */

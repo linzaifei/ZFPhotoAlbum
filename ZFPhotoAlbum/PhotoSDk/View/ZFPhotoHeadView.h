@@ -44,11 +44,7 @@ typedef void(^ClickTypeBlock)(ZFClickType type,UIButton *btn);
 -(void)setDidClickWithType:(ClickTypeBlock)clickBlock;
 @end
 
-/** titleView */
-@interface ZFTitleView : UIButton
-@property(copy,nonatomic)NSString *title;
--(void)zfScoll;
-@end
+
 
 
 

@@ -29,8 +29,8 @@
 }
 
 -(void)click{
-    ZFPhotoBrowerViewController *photoBrowerViewController = [[ZFPhotoBrowerViewController alloc] init];
     
+    ZFPhotoBrowerViewController *photoBrowerViewController = [[ZFPhotoBrowerViewController alloc] init];
     [self.navigationController pushViewController:photoBrowerViewController animated:YES];
 }
 
